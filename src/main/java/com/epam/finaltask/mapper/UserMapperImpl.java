@@ -30,7 +30,7 @@ public class UserMapperImpl implements UserMapper {
 
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setBalance(dto.getBalance());
-        user.setAccountStatus(dto.isActive());
+        user.setActive(dto.isActive());
 
         return user;
     }
@@ -56,7 +56,7 @@ public class UserMapperImpl implements UserMapper {
         dto.setVouchers(user.getVouchers());
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setBalance(user.getBalance());
-        dto.setActive(user.isAccountStatus());
+        dto.setActive(user.isActive());
 
         return dto;
     }

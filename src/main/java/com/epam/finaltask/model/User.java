@@ -38,7 +38,7 @@ public class User {
 	@Column(nullable = false)
     private Double balance;
 	@Column(nullable = false)
-    private boolean accountStatus;
+    private boolean active;
 
 
     
