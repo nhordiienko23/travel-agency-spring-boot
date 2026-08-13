@@ -1,104 +1,72 @@
-# Travel agency. Spring Project
+# ✈️ Travel Agency Management System
 
-The purpose of this task is to check your knowledge in Java and Spring.
+A comprehensive, stateless web application for managing travel tours, bookings, and user accounts. Built with a focus on clean architecture, secure role-based access control, and a responsive user interface.
 
-Duration: **18** hours
+## 🚀 Key Features
 
-## Description
+* **Role-Based Access Control (RBAC):** Three distinct access levels (`ADMIN`, `MANAGER`, `USER`) with secure routing and endpoint protection.
+* **Stateless Authentication:** Fully implemented JWT (JSON Web Token) authentication mechanism (cookie & header based) with disabled HTTP sessions.
+* **Tour Management:** Advanced sorting, dynamic filtering, and pagination. Business rules enforced (e.g., "Hot 🔥" tours always displayed at the top).
+* **Responsive UI:** Custom dark-themed interface built with Thymeleaf, Bootstrap 4, and SB Admin 2.
+* **Internationalization (i18n):** Seamless switching between English (EN) and Russian (RU) locales.
+* **API Documentation:** Auto-generated interactive API documentation via Springdoc OpenAPI (Swagger UI).
+* **High Test Coverage:** Comprehensive Unit Tests utilizing JUnit 5, Mockito, and MockMvc standalone setups (74/74 passing).
 
-In this task, you will implement "Travel Agency Service" using MVC pattern. All the main classes are available and waiting
-for you in the appropriate folders.
+## 🛠️ Tech Stack
 
-The class diagram of the Domain model is shown in the figure below:
+* **Core:** Java 17/21, Spring Boot 3
+* **Security:** Spring Security 6, JWT, BCrypt
+* **Data Access:** Spring Data JPA, Hibernate, H2 (Testing) / PostgreSQL (Production)
+* **Frontend:** Thymeleaf, Bootstrap, HTML5/CSS3
+* **Tools:** Maven, MapStruct, Lombok, Git
 
-![diagram.png](TravelAgency.jpg)
+## 👥 User Roles & Permissions
 
-The travel agency has a catalogue of tours. `Authorized user` can select tours by:
-- type (rest, excursion, shopping)
-- by price
-- by transfer type (car, plane, ship)
-- by hotel type;
+1. **Administrator (`ADMIN`):**
+   * Has full access to manage the system.
+   * Can create, update, and delete tours.
+   * Manages user accounts (block/unblock features).
+2. **Manager (`MANAGER`):**
+   * Manages tour statuses (`REGISTERED`, `PAID`, `CANCELED`).
+   * Can toggle the `HOT` status for specific tours.
+3. **Client (`USER`):**
+   * Can browse available tours with advanced filters and sorting.
+   * Can purchase tours (deducts from the internal account balance).
+   * Can manage their personal profile and view purchase history.
 
-> Note: only registered users can select and order tours.
+## 💻 Running the Application Locally
 
-`Tour` must have:
-1. Title
-2. Description
-3. Price
-4. Type of tour
-5. Type of transfer
-6. Hotel type
-7. Status (registered, paid, canceled)
-8. Arrival ate
-9. Eviction date
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/nhordiienko23/travel-agency-spring-boot.git](https://github.com/nhordiienko23/travel-agency-spring-boot.git)
+   cd travel-agency-spring-boot
 
-Tour can also be hot.
+**Build and run the application:**
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+**Access the application:**
+UI Dashboard:
+```
+http://localhost:8080/
+```
+Swagger API Docs:
+```
+[http://localhost:8080/](http://localhost:8080/swagger-ui/index.html)
+```
+(Initial data including default Admin and Manager accounts are automatically populated on startup via data.sql)
 
-`User` must have personal account, which contains information about him (name, surname, balance, email, [optional] password), as well as a list of selected tours and their current status.
+# Screenshots
 
-### Permissions
+## Dashboard:
 
-`Manager`
-- defines tour as `hot`. These tours are always displayed at the top of the list.
-- transfer the status of the tour from `registered` to `paid` or `canceled`
+<img width="1920" height="1025" alt="image" src="https://github.com/user-attachments/assets/7aa949f1-0d36-4d5f-aa8e-dd5f269e1b78" />
 
-`Administrator` has all manager functionality, plus:
-- add/delete tour
-- change tour information (all fields)
-- block/unblock user
+## Manager Panel:
 
+<img width="1920" height="964" alt="image" src="https://github.com/user-attachments/assets/cb8948ad-f704-45b8-ab22-e56a9cf1bea7" />
 
+## Admin Panel:
 
-
-## Commands
-
-### Run project
-
-```mvn spring-boot:run```
-
-
-## Structure
-
-Your project is organized into several packages. Here's a brief overview of each:
-
-- All configuration classes are located here.
-
-- **`auth`**: Contains files related to authentication.
-- **`config`**: Contains configuration files for application.
-- **`controller`**: Contains implementations of all declared controllers.
-- **`dto`**: Contains DTO files.
-- **`exeption`**: Contains custom exceptions and error handler.
-- **`mapper`**: Contains Mapper files.
-- **`model`**: Contains entities files.
-- **`repository`**: Contains repository files.
-- **`service`**: Contains service interfaces and their implementations.
-- **`token`**: Contains JWT token related files.
-
-## Requirements
-
-You should use and successfully implement next points:
-
-- `Spring Data JPA`
-- `Spring Security`
-- `Internationalization and Localization`
-- `Validation`
-- `Error handling`
-
-## Nice to have
-
-- `Logging`
-- `Pagination and sorting`
-- `Other Spring technologies`
-- `Swagger API`
-- `Thymeleaf`
-
-## Recommendations
-
-- Use `Lombok`
-- Use tools like `Postman` or `Insomnia`
-- Use `ModelMapper`
-
-## Special message
-
-- Not forget to improvise and try to use different approaches while implementing your solution.
-- Time is limited to 18 hours. Don't waste your time.
+<img width="1920" height="922" alt="image" src="https://github.com/user-attachments/assets/a1db1bac-5cf2-4d6d-8f1d-ab5ad4aec56b" />
