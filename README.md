@@ -36,23 +36,38 @@ A comprehensive, stateless web application for managing travel tours, bookings, 
 
 ## 💻 Running the Application Locally
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/nhordiienko23/travel-agency-spring-boot.git](https://github.com/nhordiienko23/travel-agency-spring-boot.git)
-   cd travel-agency-spring-boot
+**Prerequisites:** Ensure you have [Docker](https://www.docker.com/) and Java 17+ installed on your machine.
 
-**Build and run the application:**
+1. **Clone the repository:**
+   
+```bash
+ git clone [https://github.com/nhordiienko23/travel-agency-spring-boot.git](https://github.com/nhordiienko23/travel-agency-spring-boot.git)
+ cd travel-agency-spring-boot
+```
+
+2. **Start the Database:**
+   
+Use Docker Compose to spin up the PostgreSQL database required for the application:
+```bash
+docker-compose up -d
+```
+
+3. **Build and run the application:**
+   
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
-**Access the application:**
+
+4. **Access the application:**
+
 UI Dashboard:
-```
+```bash
 http://localhost:8080/
 ```
+
 Swagger API Docs:
-```
+```bash
 [http://localhost:8080/](http://localhost:8080/swagger-ui/index.html)
 ```
 (Initial data including default Admin and Manager accounts are automatically populated on startup via data.sql)
