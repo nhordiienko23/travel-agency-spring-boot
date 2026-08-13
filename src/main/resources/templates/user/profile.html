@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title th:text="#{profile.title}">User Profile</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+</head>
+<body class="bg-dark text-white">
+<div class="container mt-5" style="max-width: 900px;">
+    <!-- Переключатель языков -->
+    <div class="text-right mb-2">
+        <div class="btn-group" role="group">
+            <a th:href="@{/profile(lang='en')}" class="btn btn-sm btn-outline-light">EN</a>
+            <a th:href="@{/profile(lang='ru')}" class="btn btn-sm btn-outline-light">RU</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Левая колонка: Настройки профиля -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-secondary p-4 shadow text-white h-100">
+                <h2 class="text-center mb-4" th:text="#{profile.title}">Personal Account</h2>
+
+                <div th:if="${param.success}" class="alert alert-success text-center" th:text="#{profile.success}">Profile updated successfully!</div>
+                <div th:if="${param.error}" class="alert alert-danger text-center" th:text="#{profile.error}">Error: Password must be at least 4 characters long!</div>
+
+                <form th:action="@{/profile/update}" method="post">
+                    <div class="form-group">
+                        <label th:text="#{profile.username}">Username</label>
+                        <input type="text" class="form-control bg-dark text-white border-secondary" name="username" th:value="${user.username}" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label th:text="#{profile.email}">Email</label>
+                        <input type="email" class="form-control bg-dark text-white border-secondary" name="email" th:value="${user.email}" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label th:text="#{profile.lastname}">Last Name</label>
+                        <input type="text" class="form-control bg-dark text-white border-secondary" name="lastName" th:value="${user.lastName}">
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label th:text="#{profile.phone}">Phone Number</label>
+                        <input type="text" class="form-control bg-dark text-white border-secondary" name="phoneNumber" th:value="${user.phoneNumber}" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label th:text="#{profile.balance}">Balance</label>
+                        <input type="text" class="form-control bg-dark text-white border-secondary" th:value="${user.balance}" disabled>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label th:text="#{profile.password}">New Password</label>
+                        <input type="password" class="form-control bg-dark text-white border-secondary" name="password" minlength="4" th:placeholder="#{profile.passwordPlaceholder}" placeholder="Leave blank to keep current">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-4" th:text="#{profile.save}">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Правая колонка: Мои туры -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-secondary p-4 shadow text-white h-100">
+                <h2 class="text-center mb-4" th:text="#{dashboard.myTours}">My Purchased Tours</h2>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th th:text="#{dashboard.titleCol}">Title</th>
+                            <th th:text="#{dashboard.statusCol}">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(myVouchers)}">
+                            <td colspan="2" class="text-center" th:text="#{dashboard.noMyTours}">You haven't purchased any tours yet.</td>
+                        </tr>
+                        <tr th:each="v : ${myVouchers}">
+                            <td th:text="${v.title}"></td>
+                            <td><span class="badge badge-success" th:text="${v.status}"></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопка возврата -->
+    <div class="text-center mt-3 mb-5">
+        <a th:href="@{/dashboard}" class="btn btn-outline-info" th:text="#{profile.back}">Back to Dashboard</a>
+    </div>
+</div>
+</body>
+</html>

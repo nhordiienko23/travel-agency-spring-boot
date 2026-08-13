@@ -1,98 +1,121 @@
 package com.epam.finaltask.service;
 
-import java.util.UUID;
-
+import com.epam.finaltask.dto.UserDTO;
+import com.epam.finaltask.mapper.UserMapper;
+import com.epam.finaltask.model.Role;
+import com.epam.finaltask.model.User;
+import com.epam.finaltask.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.epam.finaltask.dto.UserDTO;
-import com.epam.finaltask.exception.ResourceNotFoundException;
-import com.epam.finaltask.mapper.UserMapper;
-import com.epam.finaltask.model.User;
-import com.epam.finaltask.repository.UserRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
-	private final UserMapper userMapper;
 	private final PasswordEncoder passwordEncoder;
+	private final UserMapper userMapper;
 
 	@Override
 	@Transactional
 	public UserDTO register(UserDTO userDTO) {
-		if (userRepository.existsByUsername(userDTO.getUsername())) {
-			throw new IllegalArgumentException("User with username " + userDTO.getUsername() + " already exists");
+		if (userRepository.findUserByUsername(userDTO.getUsername()).isPresent()) {
+			throw new IllegalArgumentException("Username is already taken");
 		}
+
+		if (userDTO.getPassword() == null || userDTO.getPassword().length() < 4) {
+			throw new IllegalArgumentException("Password must be at least 4 characters long");
+		}
+
 		User user = userMapper.toUser(userDTO);
 
-		if (user.getPassword() != null && !user.getPassword().isBlank()) {
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
-		}
-
+		// Явно проставляем email и другие поля на случай, если маппер их пропустил
+		user.setEmail(userDTO.getEmail());
+		user.setLastName(userDTO.getLastName());
+		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+		user.setRole(Role.USER);
 		user.setActive(true);
+		if (user.getBalance() == null) {
+			user.setBalance(5000.0);
+		}
 
 		User savedUser = userRepository.save(user);
 		return userMapper.toUserDTO(savedUser);
 	}
 
 	@Override
-	@Transactional
-	public UserDTO updateUser(String username, UserDTO userDTO) {
-		User existingUser = userRepository.findUserByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
-
-		existingUser.setPhoneNumber(userDTO.getPhoneNumber());
-		existingUser.setBalance(userDTO.getBalance());
-
-		if (userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
-			existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-		}
-
-		User updatedUser = userRepository.save(existingUser);
-		return userMapper.toUserDTO(updatedUser);
+	public UserDTO getUserById(UUID id) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+		return userMapper.toUserDTO(user);
 	}
+
+	// --- ДОБАВЛЕННЫЕ МЕТОДЫ ИЗ ИНТЕРФЕЙСА ---
 
 	@Override
 	public UserDTO getUserByUsername(String username) {
 		User user = userRepository.findUserByUsername(username)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+				.orElseThrow(() -> new RuntimeException("User not found"));
 		return userMapper.toUserDTO(user);
 	}
 
 	@Override
 	@Transactional
 	public UserDTO changeAccountStatus(UserDTO userDTO) {
-		User existingUser;
-		if (userDTO.getId() != null) {
-			existingUser = userRepository.findById(UUID.fromString(userDTO.getId()))
-					.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userDTO.getId()));
-		} else {
-			existingUser = userRepository.findUserByUsername(userDTO.getUsername())
-					.orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + userDTO.getUsername()));
-		}
+		User user = userRepository.findUserByUsername(userDTO.getUsername())
+				.orElseThrow(() -> new RuntimeException("User not found"));
 
-		// Задействуем маппер, как этого ожидает юнит-тест
-		User mappedUser = userMapper.toUser(userDTO);
-		if (mappedUser != null) {
-			existingUser.setActive(mappedUser.isActive());
-		} else {
-			existingUser.setActive(userDTO.isActive());
-		}
+		user.setActive(userDTO.isActive());
+		User savedUser = userRepository.save(user);
+		return userMapper.toUserDTO(savedUser);
+	}
 
-		User updatedUser = userRepository.save(existingUser);
-		return userMapper.toUserDTO(updatedUser);
+	// ----------------------------------------
+
+	@Override
+	public Page<User> findUsers(String keyword, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		if (keyword != null && !keyword.isEmpty()) {
+			return userRepository.searchUsers(keyword, pageable);
+		}
+		return userRepository.findAll(pageable);
 	}
 
 	@Override
-	public UserDTO getUserById(UUID id) {
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-		return userMapper.toUserDTO(user);
+	@Transactional
+	public void toggleUserStatus(String username) {
+		User user = userRepository.findUserByUsername(username)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		user.setActive(!user.isActive());
+		userRepository.save(user);
+	}
+
+	@Override
+	@Transactional
+	public void updateUserProfile(String username, UserDTO userDTO) {
+		User user = userRepository.findUserByUsername(username)
+				.orElseThrow(() -> new RuntimeException("User not found"));
+
+		user.setEmail(userDTO.getEmail());
+		user.setLastName(userDTO.getLastName());
+		user.setPhoneNumber(userDTO.getPhoneNumber());
+
+		// Жесткая проверка пароля при обновлении
+		if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
+			if (userDTO.getPassword().length() < 4) {
+				throw new IllegalArgumentException("Password must be at least 4 characters long");
+			}
+			user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+		}
+
+		userRepository.save(user);
 	}
 }

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title th:text="#{manager.title}">Manager - Tour Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
+            <div class="sidebar-brand-text mx-3">Travel Manager</div>
+        </a>
+        <hr class="sidebar-divider my-0">
+        <li class="nav-item active">
+            <a class="nav-link" href="/manager/vouchers"><i class="fas fa-fw fa-plane"></i><span th:text="#{manager.nav.manage}">Manage Tours</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/dashboard"><i class="fas fa-fw fa-tachometer-alt"></i><span th:text="#{admin.dashboard.nav}">Dashboard</span></a>
+        </li>
+        <hr class="sidebar-divider">
+        <li class="nav-item text-center mt-3">
+            <div class="btn-group" role="group">
+                <a th:href="@{/manager/vouchers(lang='en', keyword=${keyword}, status=${status}, sortField=${sortField}, sortDir=${sortDir})}" class="btn btn-sm btn-light">EN</a>
+                <a th:href="@{/manager/vouchers(lang='ru', keyword=${keyword}, status=${status}, sortField=${sortField}, sortDir=${sortDir})}" class="btn btn-sm btn-light">RU</a>
+            </div>
+        </li>
+    </ul>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <ul class="navbar-nav ml-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link text-danger font-weight-bold" th:href="@{/auth/logout}">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i> <span th:text="#{dashboard.logout}">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- End of Topbar -->
+
+            <div class="container-fluid mt-4">
+                <h1 class="h3 mb-4 text-gray-800" th:text="#{manager.heading}">Manager Panel: Hot Tours & Statuses</h1>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+
+                        <!-- Форма поиска, фильтрации и сортировки -->
+                        <form th:action="@{/manager/vouchers}" method="get" class="form-row align-items-center">
+                            <input type="hidden" name="lang" th:value="${param.lang}">
+
+                            <div class="col-md-3 mb-2">
+                                <input type="text" name="keyword" th:value="${keyword}" class="form-control" th:placeholder="#{dashboard.search}" placeholder="Search title...">
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <select name="status" class="form-control">
+                                    <option value="" th:text="#{manager.allStatuses}">All Statuses</option>
+                                    <option value="REGISTERED" th:selected="${status == 'REGISTERED'}">REGISTERED</option>
+                                    <option value="PAID" th:selected="${status == 'PAID'}">PAID</option>
+                                    <option value="CANCELED" th:selected="${status == 'CANCELED'}">CANCELED</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <select name="sortField" class="form-control">
+                                    <option value="price" th:selected="${sortField == 'price'}" th:text="#{dashboard.sortPrice}">Sort by Price</option>
+                                    <option value="title" th:selected="${sortField == 'title'}" th:text="#{dashboard.sortTitle}">Sort by Title</option>
+                                    <option value="isHot" th:selected="${sortField == 'isHot'}" th:text="#{dashboard.sortHot}">Sort by Hot</option>
+                                    <option value="status" th:selected="${sortField == 'status'}" th:text="#{dashboard.sortStatus}">Sort by Status</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <select name="sortDir" class="form-control">
+                                    <option value="asc" th:selected="${sortDir == 'asc'}" th:text="#{dashboard.asc}">Ascending (Low to High)</option>
+                                    <option value="desc" th:selected="${sortDir == 'desc'}" th:text="#{dashboard.desc}">Descending (High to Low)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <button type="submit" class="btn btn-primary px-3" th:text="#{dashboard.apply}">Apply</button>
+                                <a th:href="@{/manager/vouchers(lang=${param.lang})}" class="btn btn-secondary ml-1" th:text="#{dashboard.reset}">Reset</a>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th th:text="#{dashboard.titleCol}">Title</th>
+                                <th th:text="#{dashboard.priceCol}">Price</th>
+                                <th th:text="#{manager.table.hotStatus}">Hot Status</th>
+                                <th th:text="#{dashboard.statusCol}">Tour Status</th>
+                                <th th:text="#{manager.table.actions}">Actions (Manager)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(vouchersPage.content)}">
+                                <td colspan="5" class="text-center" th:text="#{dashboard.noTours}">No tours available.</td>
+                            </tr>
+                            <tr th:each="v : ${vouchersPage.content}">
+                                <td th:text="${v.title}"></td>
+                                <td>$<span th:text="${v.price}"></span></td>
+                                <td>
+                                    <span th:if="${v.isHot}" class="badge badge-danger">HOT 🔥</span>
+                                    <span th:unless="${v.isHot}" class="badge badge-secondary" th:text="#{manager.regular}">Regular</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-info" th:text="${v.status}"></span>
+                                </td>
+                                <td>
+                                    <!-- Кнопка переключения Hot -->
+                                    <form th:action="@{/manager/vouchers/toggle-hot}" method="post" class="d-inline">
+                                        <input type="hidden" name="id" th:value="${v.id}">
+                                        <input type="hidden" name="isHot" th:value="${v.isHot}">
+                                        <button type="submit" class="btn btn-sm" th:classappend="${v.isHot} ? 'btn-secondary' : 'btn-warning'"
+                                                th:text="${v.isHot} ? #{manager.btn.removeHot} : #{manager.btn.setHot}">Set as Hot</button>
+                                    </form>
+
+                                    <!-- Изменение статуса -->
+                                    <form th:action="@{/manager/vouchers/update-status}" method="post" class="d-inline ml-2">
+                                        <input type="hidden" name="id" th:value="${v.id}">
+                                        <select name="status" class="form-control form-control-sm d-inline w-auto" onchange="this.form.submit()">
+                                            <option value="" disabled selected th:text="#{manager.select.status}">Change Status...</option>
+                                            <option value="PAID">PAID</option>
+                                            <option value="CANCELED">CANCELED</option>
+                                            <option value="REGISTERED">REGISTERED</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Пагинация -->
+                        <nav th:if="${vouchersPage.totalPages > 1}" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/manager/vouchers(page=${currentPage-1}, lang=${param.lang}, keyword=${keyword}, status=${status}, sortField=${sortField}, sortDir=${sortDir})}">Previous</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, vouchersPage.totalPages - 1)}" th:classappend="${currentPage == i} ? 'active'">
+                                    <a class="page-link" th:href="@{/manager/vouchers(page=${i}, lang=${param.lang}, keyword=${keyword}, status=${status}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i+1}">1</a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == vouchersPage.totalPages - 1} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/manager/vouchers(page=${currentPage+1}, lang=${param.lang}, keyword=${keyword}, status=${status}, sortField=${sortField}, sortDir=${sortDir})}">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

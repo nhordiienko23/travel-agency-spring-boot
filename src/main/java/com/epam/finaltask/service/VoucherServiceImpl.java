@@ -3,6 +3,10 @@ package com.epam.finaltask.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,32 +68,39 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher existingVoucher = voucherRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new ResourceNotFoundException("Voucher not found with id: " + id));
 
-        existingVoucher.setTitle(voucherDTO.getTitle());
-        existingVoucher.setDescription(voucherDTO.getDescription());
-        existingVoucher.setPrice(voucherDTO.getPrice());
+        if (voucherDTO.getTitle() != null && !voucherDTO.getTitle().isEmpty()) {
+            existingVoucher.setTitle(voucherDTO.getTitle());
+        }
+        if (voucherDTO.getDescription() != null && !voucherDTO.getDescription().isEmpty()) {
+            existingVoucher.setDescription(voucherDTO.getDescription());
+        }
+        if (voucherDTO.getPrice() != null) {
+            existingVoucher.setPrice(voucherDTO.getPrice());
+        }
 
+        // Если в DTO прилетает строка, парсим её напрямую через valueOf
         if (voucherDTO.getTourType() != null) {
-            existingVoucher.setTourType(TourType.valueOf(voucherDTO.getTourType().toUpperCase()));
+            existingVoucher.setTourType(TourType.valueOf(voucherDTO.getTourType().toString().toUpperCase()));
         }
         if (voucherDTO.getTransferType() != null) {
-            existingVoucher.setTransferType(TransferType.valueOf(voucherDTO.getTransferType().toUpperCase()));
+            existingVoucher.setTransferType(TransferType.valueOf(voucherDTO.getTransferType().toString().toUpperCase()));
         }
         if (voucherDTO.getHotelType() != null) {
-            existingVoucher.setHotelType(HotelType.valueOf(voucherDTO.getHotelType().toUpperCase()));
+            existingVoucher.setHotelType(HotelType.valueOf(voucherDTO.getHotelType().toString().toUpperCase()));
         }
         if (voucherDTO.getStatus() != null) {
-            existingVoucher.setStatus(VoucherStatus.valueOf(voucherDTO.getStatus().toUpperCase()));
+            existingVoucher.setStatus(VoucherStatus.valueOf(voucherDTO.getStatus().toString().toUpperCase()));
         }
 
-        existingVoucher.setArrivalDate(voucherDTO.getArrivalDate());
-        existingVoucher.setEvictionDate(voucherDTO.getEvictionDate());
+        if (voucherDTO.getArrivalDate() != null) {
+            existingVoucher.setArrivalDate(voucherDTO.getArrivalDate());
+        }
+        if (voucherDTO.getEvictionDate() != null) {
+            existingVoucher.setEvictionDate(voucherDTO.getEvictionDate());
+        }
 
-        Voucher saved = voucherRepository.save(existingErrorHandling(existingVoucher));
+        Voucher saved = voucherRepository.save(existingVoucher);
         return voucherMapper.toVoucherDTO(saved);
-    }
-
-    private Voucher existingErrorHandling(Voucher voucher) {
-        return voucher;
     }
 
     @Override
@@ -151,8 +162,41 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public List<VoucherDTO> findAll() {
+        // Сортируем: сначала горящие (isHot = true), затем обычные
         return voucherRepository.findAllByOrderByIsHotDesc().stream()
                 .map(voucherMapper::toVoucherDTO)
                 .toList();
+    }
+
+    @Override
+    public Page<VoucherDTO> findAvailableVouchers(String keyword, String tourType, String hotelType, Double maxPrice, Boolean isHot, int page, int size, String sortField, String sortDir) {
+
+        Sort.Direction direction = "asc".equalsIgnoreCase(sortDir) ? Sort.Direction.ASC : Sort.Direction.DESC;
+
+        String field = (sortField != null && !sortField.isEmpty()) ? sortField : "isHot";
+
+
+        Sort sorting = Sort.by(Sort.Direction.DESC, "isHot").and(Sort.by(direction, field));
+
+        Pageable pageable = PageRequest.of(page, size, sorting);
+
+        TourType tType = (tourType != null && !tourType.isEmpty()) ? TourType.valueOf(tourType) : null;
+        HotelType hType = (hotelType != null && !hotelType.isEmpty()) ? HotelType.valueOf(hotelType) : null;
+
+        return voucherRepository.findAvailableVouchers(keyword, tType, hType, maxPrice, isHot, pageable)
+                .map(voucherMapper::toVoucherDTO);
+    }
+    @Override
+    public Page<VoucherDTO> findAllVouchersForManager(String keyword, String status, int page, int size, String sortField, String sortDir) {
+        Sort.Direction direction = "asc".equalsIgnoreCase(sortDir) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        String field = (sortField != null && !sortField.isEmpty()) ? sortField : "isHot";
+
+        Sort sorting = Sort.by(Sort.Direction.DESC, "isHot").and(Sort.by(direction, field));
+        Pageable pageable = PageRequest.of(page, size, sorting);
+
+        VoucherStatus vStatus = (status != null && !status.isEmpty()) ? VoucherStatus.valueOf(status.toUpperCase()) : null;
+
+        return voucherRepository.findAllVouchersForManager(keyword, vStatus, pageable)
+                .map(voucherMapper::toVoucherDTO);
     }
 }

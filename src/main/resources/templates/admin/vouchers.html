@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title th:text="#{admin.vouchers.title}">Admin - Manage Vouchers</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
+            <div class="sidebar-brand-text mx-3">Travel Admin</div>
+        </a>
+        <hr class="sidebar-divider my-0">
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/users"><i class="fas fa-fw fa-users"></i><span th:text="#{admin.users.nav}">Users</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="/admin/vouchers"><i class="fas fa-fw fa-plane"></i><span th:text="#{admin.vouchers.nav}">Vouchers</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/dashboard"><i class="fas fa-fw fa-tachometer-alt"></i><span th:text="#{admin.dashboard.nav}">Dashboard</span></a>
+        </li>
+        <hr class="sidebar-divider">
+        <li class="nav-item text-center mt-3">
+            <div class="btn-group" role="group">
+                <a th:href="@{/admin/vouchers(lang='en')}" class="btn btn-sm btn-light">EN</a>
+                <a th:href="@{/admin/vouchers(lang='ru')}" class="btn btn-sm btn-light">RU</a>
+            </div>
+        </li>
+    </ul>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <div class="container-fluid mt-4">
+                <h1 class="h3 mb-4 text-gray-800" th:text="#{admin.vouchers.heading}">Vouchers Management (Admin)</h1>
+
+                <!-- Добавление тура -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary" th:text="#{admin.vouchers.addTitle}">Add New Tour</h6></div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/vouchers/create}" th:object="${voucherDTO}" method="post">
+                            <div class="row">
+                                <div class="col-md-3 mb-3"><input type="text" th:field="*{title}" class="form-control" th:placeholder="#{admin.vouchers.formTitle}" placeholder="Title" required></div>
+                                <div class="col-md-3 mb-3"><input type="text" th:field="*{description}" class="form-control" th:placeholder="#{admin.vouchers.formDesc}" placeholder="Description" required></div>
+                                <div class="col-md-2 mb-3"><input type="number" step="0.01" th:field="*{price}" class="form-control" th:placeholder="#{admin.vouchers.formPrice}" placeholder="Price" required></div>
+                                <div class="col-md-2 mb-3">
+                                    <select th:field="*{tourType}" class="form-control">
+                                        <option value="LEISURE">LEISURE</option><option value="SPORTS">SPORTS</option><option value="CULTURAL">CULTURAL</option><option value="HEALTH">HEALTH</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <select th:field="*{transferType}" class="form-control">
+                                        <option value="PLANE">PLANE</option><option value="BUS">BUS</option><option value="TRAIN">TRAIN</option><option value="SHIP">SHIP</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-3">
+                                    <select th:field="*{hotelType}" class="form-control">
+                                        <option value="THREE_STARS">3 Stars</option><option value="FOUR_STARS">4 Stars</option><option value="FIVE_STARS">5 Stars</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-3"><input type="date" th:field="*{arrivalDate}" class="form-control" required></div>
+                                <div class="col-md-2 mb-3"><input type="date" th:field="*{evictionDate}" class="form-control" required></div>
+                                <div class="col-md-2 mb-3"><button type="submit" class="btn btn-primary w-100" th:text="#{admin.vouchers.addButton}">Add Tour</button></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Список туров для редактирования -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3"><h6 class="m-0 font-weight-bold text-primary" th:text="#{admin.vouchers.editTitle}">Edit or Delete Tours</h6></div>
+                    <div class="card-body">
+                        <div th:each="v : ${vouchers}" class="card mb-3 p-3 bg-light text-dark">
+                            <form th:action="@{/admin/vouchers/update}" method="post">
+                                <input type="hidden" name="id" th:value="${v.id}">
+                                <div class="row">
+                                    <div class="col-md-3 mb-2">
+                                        <label class="small font-weight-bold" th:text="#{admin.vouchers.formTitle}">Title</label>
+                                        <input type="text" name="title" th:value="${v.title}" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="small font-weight-bold" th:text="#{admin.vouchers.formDesc}">Description</label>
+                                        <input type="text" name="description" th:value="${v.description}" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-2 mb-2">
+                                        <label class="small font-weight-bold" th:text="#{admin.vouchers.formPrice}">Price ($)</label>
+                                        <input type="number" step="0.01" name="price" th:value="${v.price}" class="form-control form-control-sm" required>
+                                    </div>
+                                    <div class="col-md-3 mb-2 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-success btn-sm mr-2" th:text="#{admin.vouchers.updateButton}">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <form th:action="@{/admin/vouchers/delete}" method="post" class="mt-2">
+                                <input type="hidden" name="id" th:value="${v.id}">
+                                <button type="submit" class="btn btn-danger btn-sm" th:text="#{admin.vouchers.deleteButton}">Delete Tour</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

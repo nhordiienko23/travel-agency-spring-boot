@@ -1,11 +1,9 @@
 package com.epam.finaltask.model;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
-
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -15,31 +13,33 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class User {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+	private UUID id;
 
-	@Column(nullable = false)
-    private String username;
-	@Column(nullable = false)
-    private String password;
+	@Column(unique = true, nullable = false)
+	private String username; // Логин пользователя
+
+	@Column(unique = true, nullable = false)
+	private String email;    // Почта с валидацией
+
+	private String password;
+
+	@Column(name = "last_name")
+	private String lastName;  // Фамилия (Surname)
+
+	private String phoneNumber;
+
+	private Double balance;
 
 	@Enumerated(EnumType.STRING)
+	private Role role;
+
+	@Builder.Default
 	@Column(nullable = false)
-    private Role role;
+	private boolean active = true;
 
-
-	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Voucher> vouchers;
-
-
-	@Column(nullable = false)
-    private String phoneNumber;
-	@Column(nullable = false)
-    private Double balance;
-	@Column(nullable = false)
-    private boolean active;
-
-
-    
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Voucher> vouchers;
 }

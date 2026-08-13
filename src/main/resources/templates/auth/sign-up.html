@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title th:text="#{signup.title}">
+        Registration
+    </title>
+
+    <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+</head>
+
+<body class="bg-dark text-white">
+
+<div class="container mt-5" style="max-width: 500px;">
+
+    <!-- LANGUAGE SWITCH -->
+    <div class="text-right mb-2">
+
+        <div class="btn-group" role="group">
+
+            <a
+                    th:href="@{/auth/sign-up(lang='en')}"
+                    class="btn btn-sm btn-outline-light">
+                EN
+            </a>
+
+            <a
+                    th:href="@{/auth/sign-up(lang='ru')}"
+                    class="btn btn-sm btn-outline-light">
+                RU
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card bg-secondary p-4 shadow text-white">
+
+        <!-- TITLE -->
+        <h2
+                class="text-center mb-4"
+                th:text="#{signup.title}">
+            Registration
+        </h2>
+
+        <!-- REGISTRATION ERROR -->
+        <div
+                th:if="${registrationError}"
+                class="alert alert-danger text-center"
+                th:text="${registrationError}">
+        </div>
+
+        <!-- FORM -->
+        <form
+                th:action="@{/auth/sign-up}"
+                th:object="${userDTO}"
+                method="post">
+
+            <!-- USERNAME -->
+            <div class="form-group">
+
+                <label
+                        th:text="#{signup.username}">
+                    Username
+                </label>
+
+                <input
+                        type="text"
+                        th:field="*{username}"
+                        class="form-control bg-dark text-white border-secondary"
+                        required
+                        minlength="3">
+
+                <small
+                        class="text-danger"
+                        th:if="${#fields.hasErrors('username')}"
+                        th:errors="*{username}">
+                </small>
+
+            </div>
+
+            <!-- EMAIL -->
+            <div class="form-group mt-3">
+
+                <label
+                        th:text="#{signup.email}">
+                    Email
+                </label>
+
+                <input
+                        type="email"
+                        th:field="*{email}"
+                        class="form-control bg-dark text-white border-secondary"
+                        required>
+
+                <small
+                        class="text-danger"
+                        th:if="${#fields.hasErrors('email')}"
+                        th:errors="*{email}">
+                </small>
+
+            </div>
+
+            <!-- LAST NAME -->
+            <div class="form-group mt-3">
+
+                <label
+                        th:text="#{signup.lastname}">
+                    Last Name
+                </label>
+
+                <input
+                        type="text"
+                        th:field="*{lastName}"
+                        class="form-control bg-dark text-white border-secondary">
+
+                <small
+                        class="text-danger"
+                        th:if="${#fields.hasErrors('lastName')}"
+                        th:errors="*{lastName}">
+                </small>
+
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="form-group mt-3">
+
+                <label
+                        th:text="#{signup.password}">
+                    Password
+                </label>
+
+                <input
+                        type="password"
+                        th:field="*{password}"
+                        class="form-control bg-dark text-white border-secondary"
+                        required
+                        minlength="4">
+
+                <small
+                        class="text-danger"
+                        th:if="${#fields.hasErrors('password')}"
+                        th:errors="*{password}">
+                </small>
+
+            </div>
+
+            <!-- PHONE -->
+            <div class="form-group mt-3">
+
+                <label
+                        th:text="#{signup.phone}">
+                    Phone Number
+                </label>
+
+                <input
+                        type="text"
+                        th:field="*{phoneNumber}"
+                        class="form-control bg-dark text-white border-secondary"
+                        required>
+
+                <small
+                        class="text-danger"
+                        th:if="${#fields.hasErrors('phoneNumber')}"
+                        th:errors="*{phoneNumber}">
+                </small>
+
+            </div>
+
+            <!-- HIDDEN FIELDS -->
+            <input type="hidden" th:field="*{role}">
+            <input type="hidden" th:field="*{balance}">
+            <input type="hidden" th:field="*{active}">
+
+            <!-- SUBMIT -->
+            <button
+                    type="submit"
+                    class="btn btn-info w-100 mt-4"
+                    th:text="#{signup.submit}">
+                Register
+            </button>
+
+        </form>
+
+        <!-- NAVIGATION -->
+        <div class="mt-4 text-center">
+
+            <p>
+
+                <span th:text="#{signup.hasAccount}">
+                    Already have an account?
+                </span>
+
+                <a
+                        th:href="@{/auth/sign-in}"
+                        class="text-warning"
+                        th:text="#{nav.signin}">
+                    Sign in
+                </a>
+
+            </p>
+
+            <a
+                    th:href="@{/}"
+                    class="text-muted"
+                    th:text="#{nav.home}">
+                Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
