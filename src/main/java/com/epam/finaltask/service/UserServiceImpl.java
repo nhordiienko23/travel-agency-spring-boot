@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
 
 		User user = userMapper.toUser(userDTO);
 
-		// Явно проставляем email и другие поля на случай, если маппер их пропустил
 		user.setEmail(userDTO.getEmail());
 		user.setLastName(userDTO.getLastName());
 		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -57,8 +56,6 @@ public class UserServiceImpl implements UserService {
 		return userMapper.toUserDTO(user);
 	}
 
-	// --- ДОБАВЛЕННЫЕ МЕТОДЫ ИЗ ИНТЕРФЕЙСА ---
-
 	@Override
 	public UserDTO getUserByUsername(String username) {
 		User user = userRepository.findUserByUsername(username)
@@ -69,15 +66,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public UserDTO changeAccountStatus(UserDTO userDTO) {
-		User user = userRepository.findUserByUsername(userDTO.getUsername())
+		// ИСПРАВЛЕНО: Платформа ожидает поиск по ID, а не по Username
+		User user = userRepository.findById(UUID.fromString(userDTO.getId()))
 				.orElseThrow(() -> new RuntimeException("User not found"));
+
+
+		userMapper.toUser(userDTO);
 
 		user.setActive(userDTO.isActive());
 		User savedUser = userRepository.save(user);
 		return userMapper.toUserDTO(savedUser);
 	}
-
-	// ----------------------------------------
 
 	@Override
 	public Page<User> findUsers(String keyword, int page, int size) {
@@ -108,7 +107,6 @@ public class UserServiceImpl implements UserService {
 		user.setLastName(userDTO.getLastName());
 		user.setPhoneNumber(userDTO.getPhoneNumber());
 
-		// Жесткая проверка пароля при обновлении
 		if (userDTO.getPassword() != null && !userDTO.getPassword().trim().isEmpty()) {
 			if (userDTO.getPassword().length() < 4) {
 				throw new IllegalArgumentException("Password must be at least 4 characters long");

@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -82,7 +80,6 @@ public class UserServiceImplTest {
     UserDTO userDTO = new UserDTO();
     userDTO.setId(userId);
     userDTO.setActive(true);
-    userDTO.setUsername("testuser"); // Added for safety if implementation uses username
 
     User user = new User();
     user.setId(UUID.fromString(userId));
@@ -92,12 +89,11 @@ public class UserServiceImplTest {
     updatedUser.setId(UUID.fromString(userId));
     updatedUser.setActive(true);
 
-    // Modified slightly to accommodate the mock setup safely without breaking EPAM's logic flow
-    lenient().when(userRepository.findById(UUID.fromString(userId))).thenReturn(Optional.of(user));
-    lenient().when(userRepository.findUserByUsername(anyString())).thenReturn(Optional.of(user));
-    lenient().when(userMapper.toUser(any(UserDTO.class))).thenReturn(updatedUser);
-    lenient().when(userRepository.save(any(User.class))).thenReturn(updatedUser);
-    lenient().when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
+    // ОРИГИНАЛЬНЫЙ КОД ТЕСТА EPAM
+    when(userRepository.findById(UUID.fromString(userId))).thenReturn(Optional.of(user));
+    when(userMapper.toUser(any(UserDTO.class))).thenReturn(updatedUser);
+    when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+    when(userMapper.toUserDTO(any(User.class))).thenReturn(userDTO);
 
     // When
     UserDTO resultDTO = userService.changeAccountStatus(userDTO);
@@ -106,6 +102,7 @@ public class UserServiceImplTest {
     assertNotNull(resultDTO, "The returned UserDTO should not be null");
     assertTrue(resultDTO.isActive(), "The account status should be updated to true");
 
+    verify(userRepository, times(1)).findById(UUID.fromString(userId));
     verify(userRepository, times(1)).save(any(User.class));
   }
 
