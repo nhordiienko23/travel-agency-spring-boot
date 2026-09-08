@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale.language}">
 
 <head>
     <meta charset="UTF-8">
@@ -11,70 +13,107 @@
     <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dark-theme.css}">
 </head>
 
 <body class="bg-dark text-white">
 
 <div class="container mt-5" style="max-width: 500px;">
 
+
+    <!-- ========================================================= -->
     <!-- LANGUAGE SWITCH -->
+    <!-- ========================================================= -->
+
     <div class="text-right mb-2">
 
         <div class="btn-group" role="group">
 
-            <a
-                    th:href="@{/auth/sign-up(lang='en')}"
-                    class="btn btn-sm btn-outline-light">
-                EN
-            </a>
+            <button
+                    type="button"
+                    class="btn btn-sm btn-outline-light"
+                    onclick="switchLanguage('en')">
 
-            <a
-                    th:href="@{/auth/sign-up(lang='ru')}"
-                    class="btn btn-sm btn-outline-light">
+                EN
+
+            </button>
+
+            <button
+                    type="button"
+                    class="btn btn-sm btn-outline-light"
+                    onclick="switchLanguage('ru')">
+
                 RU
-            </a>
+
+            </button>
 
         </div>
 
     </div>
 
+
+    <!-- ========================================================= -->
+    <!-- REGISTRATION CARD -->
+    <!-- ========================================================= -->
+
     <div class="card bg-secondary p-4 shadow text-white">
 
+
         <!-- TITLE -->
+
         <h2
                 class="text-center mb-4"
                 th:text="#{signup.title}">
+
             Registration
+
         </h2>
 
+
         <!-- REGISTRATION ERROR -->
+
         <div
                 th:if="${registrationError}"
                 class="alert alert-danger text-center"
                 th:text="${registrationError}">
+
         </div>
 
-        <!-- FORM -->
+
+        <!-- ===================================================== -->
+        <!-- REGISTRATION FORM -->
+        <!-- ===================================================== -->
+
         <form
+                id="registerForm"
                 th:action="@{/auth/sign-up}"
-                th:object="${userDTO}"
+                th:object="${registerRequest}"
                 method="post">
 
+
             <!-- USERNAME -->
+
             <div class="form-group">
 
                 <label
+                        for="username"
                         th:text="#{signup.username}">
+
                     Username
+
                 </label>
 
                 <input
                         type="text"
+                        id="username"
                         th:field="*{username}"
                         class="form-control bg-dark text-white border-secondary"
                         required
-                        minlength="3">
+                        maxlength="50"
+                        autocomplete="username">
 
                 <small
                         class="text-danger"
@@ -84,19 +123,26 @@
 
             </div>
 
+
             <!-- EMAIL -->
+
             <div class="form-group mt-3">
 
                 <label
+                        for="email"
                         th:text="#{signup.email}">
+
                     Email
+
                 </label>
 
                 <input
                         type="email"
+                        id="email"
                         th:field="*{email}"
                         class="form-control bg-dark text-white border-secondary"
-                        required>
+                        required
+                        autocomplete="email">
 
                 <small
                         class="text-danger"
@@ -106,18 +152,25 @@
 
             </div>
 
+
             <!-- LAST NAME -->
+
             <div class="form-group mt-3">
 
                 <label
+                        for="lastName"
                         th:text="#{signup.lastname}">
+
                     Last Name
+
                 </label>
 
                 <input
                         type="text"
+                        id="lastName"
                         th:field="*{lastName}"
-                        class="form-control bg-dark text-white border-secondary">
+                        class="form-control bg-dark text-white border-secondary"
+                        autocomplete="family-name">
 
                 <small
                         class="text-danger"
@@ -127,20 +180,29 @@
 
             </div>
 
+
             <!-- PASSWORD -->
+
             <div class="form-group mt-3">
 
                 <label
+                        for="password"
                         th:text="#{signup.password}">
+
                     Password
+
                 </label>
 
                 <input
                         type="password"
+                        id="password"
                         th:field="*{password}"
                         class="form-control bg-dark text-white border-secondary"
                         required
-                        minlength="4">
+                        minlength="8"
+                        autocomplete="new-password"
+                        pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&]).{8,}"
+                        th:title="#{val.password.strong}">
 
                 <small
                         class="text-danger"
@@ -150,19 +212,26 @@
 
             </div>
 
+
             <!-- PHONE -->
+
             <div class="form-group mt-3">
 
                 <label
+                        for="phoneNumber"
                         th:text="#{signup.phone}">
+
                     Phone Number
+
                 </label>
 
                 <input
                         type="text"
+                        id="phoneNumber"
                         th:field="*{phoneNumber}"
                         class="form-control bg-dark text-white border-secondary"
-                        required>
+                        required
+                        autocomplete="tel">
 
                 <small
                         class="text-danger"
@@ -172,44 +241,56 @@
 
             </div>
 
-            <!-- HIDDEN FIELDS -->
-            <input type="hidden" th:field="*{role}">
-            <input type="hidden" th:field="*{balance}">
-            <input type="hidden" th:field="*{active}">
 
             <!-- SUBMIT -->
+
             <button
                     type="submit"
                     class="btn btn-info w-100 mt-4"
                     th:text="#{signup.submit}">
+
                 Register
+
             </button>
 
         </form>
 
-        <!-- NAVIGATION -->
+
+        <!-- ===================================================== -->
+        <!-- LINKS -->
+        <!-- ===================================================== -->
+
         <div class="mt-4 text-center">
+
 
             <p>
 
                 <span th:text="#{signup.hasAccount}">
+
                     Already have an account?
+
                 </span>
 
+
                 <a
-                        th:href="@{/auth/sign-in}"
+                        th:href="@{/auth/sign-in(lang=${#locale.language})}"
                         class="text-warning"
                         th:text="#{nav.signin}">
+
                     Sign in
+
                 </a>
 
             </p>
 
+
             <a
-                    th:href="@{/}"
+                    th:href="@{/(lang=${#locale.language})}"
                     class="text-muted"
                     th:text="#{nav.home}">
+
                 Home
+
             </a>
 
         </div>
@@ -218,5 +299,217 @@
 
 </div>
 
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
+<script>
+
+    const REGISTER_DRAFT_KEY =
+        "registerFormDraft";
+
+
+    /*
+     * ---------------------------------------------------------
+     * Save registration draft.
+     *
+     * IMPORTANT:
+     * Password is intentionally NOT stored.
+     * ---------------------------------------------------------
+     */
+
+    function saveRegisterDraft() {
+
+        const form =
+            document.getElementById(
+                "registerForm"
+            );
+
+        if (!form) {
+            return;
+        }
+
+        const draft = {};
+
+        form.querySelectorAll(
+            "input, select, textarea"
+        ).forEach(field => {
+
+            if (!field.name) {
+                return;
+            }
+
+            /*
+             * Never store the password.
+             */
+            if (
+                field.name === "password"
+                || field.type === "password"
+            ) {
+                return;
+            }
+
+            if (field.type === "checkbox") {
+
+                draft[field.name] =
+                    field.checked;
+
+            } else {
+
+                draft[field.name] =
+                    field.value;
+
+            }
+
+        });
+
+        sessionStorage.setItem(
+            REGISTER_DRAFT_KEY,
+            JSON.stringify(draft)
+        );
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Restore registration draft.
+     * ---------------------------------------------------------
+     */
+
+    function restoreRegisterDraft() {
+
+        const saved =
+            sessionStorage.getItem(
+                REGISTER_DRAFT_KEY
+            );
+
+        if (!saved) {
+            return;
+        }
+
+        const form =
+            document.getElementById(
+                "registerForm"
+            );
+
+        if (!form) {
+            return;
+        }
+
+        try {
+
+            const draft =
+                JSON.parse(saved);
+
+            Object.entries(draft).forEach(
+                ([name, value]) => {
+
+                    const field =
+                        form.elements[name];
+
+                    if (!field) {
+                        return;
+                    }
+
+                    if (field.type === "password") {
+                        return;
+                    }
+
+                    if (
+                        field.type === "checkbox"
+                    ) {
+
+                        field.checked =
+                            value;
+
+                    } else {
+
+                        field.value =
+                            value;
+
+                    }
+
+                }
+            );
+
+        } catch (error) {
+
+            sessionStorage.removeItem(
+                REGISTER_DRAFT_KEY
+            );
+        }
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Language switch.
+     *
+     * This does NOT submit the registration form.
+     * This does NOT save anything to the database.
+     * ---------------------------------------------------------
+     */
+
+    function switchLanguage(lang) {
+
+        saveRegisterDraft();
+
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        url.searchParams.set(
+            "lang",
+            lang
+        );
+
+        window.location.href =
+            url.toString();
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Page load.
+     * ---------------------------------------------------------
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            restoreRegisterDraft();
+
+
+            /*
+             * Remove draft after actual registration submit.
+             */
+            const form =
+                document.getElementById(
+                    "registerForm"
+                );
+
+            if (form) {
+
+                form.addEventListener(
+                    "submit",
+                    function () {
+
+                        sessionStorage.removeItem(
+                            REGISTER_DRAFT_KEY
+                        );
+
+                    }
+                );
+            }
+
+        }
+    );
+
+</script>
+
 </body>
 </html>
+

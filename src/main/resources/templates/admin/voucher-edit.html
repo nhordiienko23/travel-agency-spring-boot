@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale.language}">
+
+<head>
+    <meta charset="utf-8">
+
+    <title th:text="#{admin.vouchers.editTitle}">
+        Edit Tour
+    </title>
+
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+            rel="stylesheet">
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css"
+            rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dark-theme.css}">
+</head>
+
+<body class="bg-light text-dark">
+
+<div class="container mt-5">
+
+    <!-- LANGUAGE SWITCH -->
+    <div class="text-right mb-2">
+
+        <div class="btn-group" role="group">
+
+            <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    onclick="switchLanguage('en')">
+                EN
+            </button>
+
+            <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    onclick="switchLanguage('ru')">
+                RU
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0 rounded-lg mt-2">
+
+                <!-- HEADER -->
+                <div class="card-header bg-warning text-dark text-center">
+
+                    <h3
+                            class="font-weight-light my-2"
+                            th:text="#{admin.vouchers.editTitle}">
+
+                        Edit Tour
+
+                    </h3>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <form
+                            id="editVoucherForm"
+                            th:action="@{/admin/vouchers/edit/{id}(id=${voucherId})}"
+                            th:object="${updateRequest}"
+                            method="post">
+
+
+                        <!-- TITLE + PRICE -->
+                        <div class="form-row">
+
+                            <div class="form-group col-md-8">
+
+                                <label
+                                        th:text="#{admin.vouchers.formTitle}">
+                                    Title
+                                </label>
+
+                                <input
+                                        type="text"
+                                        maxlength="255"
+                                        th:field="*{title}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''">
+
+                                <div
+                                        class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('title')}"
+                                        th:errors="*{title}">
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group col-md-4">
+
+                                <label
+                                        th:text="#{admin.vouchers.formPrice}">
+                                    Price ($)
+                                </label>
+
+                                <input
+                                        type="number"
+                                        step="0.01"
+                                        th:field="*{price}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''">
+
+                                <div
+                                        class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('price')}"
+                                        th:errors="*{price}">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+                        <div class="form-group">
+
+                            <label
+                                    th:text="#{admin.vouchers.formDesc}">
+                                Description
+                            </label>
+
+                            <textarea
+                                    th:field="*{description}"
+                                    maxlength="255"
+                                    class="form-control"
+                                    rows="3"
+                                    th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''">
+                            </textarea>
+
+                            <div
+                                    class="invalid-feedback"
+                                    th:if="${#fields.hasErrors('description')}"
+                                    th:errors="*{description}">
+                            </div>
+
+                        </div>
+
+
+                        <!-- TYPES -->
+                        <div class="form-row">
+
+                            <!-- TOUR TYPE -->
+                            <div class="form-group col-md-4">
+
+                                <label
+                                        th:text="#{admin.vouchers.formTourType}">
+                                    Tour Type
+                                </label>
+
+                                <select
+                                        th:field="*{tourType}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('tourType')} ? 'is-invalid' : ''">
+
+                                    <option
+                                            th:each="type : ${T(com.epam.finaltask.voucher.TourType).values()}"
+                                            th:value="${type}"
+                                            th:text="${type}">
+                                    </option>
+
+                                </select>
+
+                                <div
+                                        class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('tourType')}"
+                                        th:errors="*{tourType}">
+                                </div>
+
+                            </div>
+
+
+                            <!-- TRANSFER TYPE -->
+                            <div class="form-group col-md-4">
+
+                                <label
+                                        th:text="#{admin.vouchers.formTransferType}">
+                                    Transfer Type
+                                </label>
+
+                                <select
+                                        th:field="*{transferType}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('transferType')} ? 'is-invalid' : ''">
+
+                                    <option
+                                            th:each="type : ${T(com.epam.finaltask.voucher.TransferType).values()}"
+                                            th:value="${type}"
+                                            th:text="${type}">
+                                    </option>
+
+                                </select>
+
+                                <div
+                                        class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('transferType')}"
+                                        th:errors="*{transferType}">
+                                </div>
+
+                            </div>
+
+
+                            <!-- HOTEL TYPE -->
+                            <div class="form-group col-md-4">
+
+                                <label
+                                        th:text="#{admin.vouchers.formHotelType}">
+                                    Hotel Type
+                                </label>
+
+                                <select
+                                        th:field="*{hotelType}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('hotelType')} ? 'is-invalid' : ''">
+
+                                    <option
+                                            th:each="type : ${T(com.epam.finaltask.voucher.HotelType).values()}"
+                                            th:value="${type}"
+                                            th:text="${type}">
+                                    </option>
+
+                                </select>
+
+                                <div
+                                        class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('hotelType')}"
+                                        th:errors="*{hotelType}">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DATES -->
+                        <div class="form-row">
+
+                            <!-- ARRIVAL DATE -->
+                            <div class="form-group col-md-6">
+
+                                <label
+                                        th:text="#{admin.vouchers.formArrivalDate}">
+                                    Arrival Date
+                                </label>
+
+                                <input
+                                        type="date"
+                                        th:field="*{arrivalDate}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('arrivalDate')} ? 'is-invalid' : ''">
+
+                                <div
+                                        class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('arrivalDate')}"
+                                        th:errors="*{arrivalDate}">
+                                </div>
+
+                            </div>
+
+
+                            <!-- EVICTION DATE -->
+                            <div class="form-group col-md-6">
+
+                                <label
+                                        th:text="#{admin.vouchers.formEvictionDate}">
+                                    Eviction Date
+                                </label>
+
+                                <input
+                                        type="date"
+                                        th:field="*{evictionDate}"
+                                        class="form-control"
+                                        th:classappend="${#fields.hasErrors('evictionDate')} ? 'is-invalid' : ''">
+
+                                <div
+                                        class="invalid-feedback"
+                                        th:if="${#fields.hasErrors('evictionDate')}"
+                                        th:errors="*{evictionDate}">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- STATUS + HOT -->
+                        <div class="form-row">
+
+                            <!-- STATUS -->
+                            <div class="form-group col-md-6">
+
+                                <label
+                                        th:text="#{admin.vouchers.formStatus}">
+                                    Tour Status
+                                </label>
+
+                                <select
+                                        th:field="*{status}"
+                                        class="form-control">
+
+                                    <option value="REGISTERED">
+                                        REGISTERED
+                                    </option>
+
+                                    <option value="PAID">
+                                        PAID
+                                    </option>
+
+                                    <option value="CANCELED">
+                                        CANCELED
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- HOT -->
+                            <div
+                                    class="form-group col-md-6 d-flex align-items-center mt-4">
+
+                                <div class="form-check ml-2">
+
+                                    <input
+                                            type="checkbox"
+                                            th:field="*{isHot}"
+                                            class="form-check-input"
+                                            id="hotCheckEdit"
+                                            value="true">
+
+                                    <label
+                                            class="form-check-label font-weight-bold"
+                                            for="hotCheckEdit"
+                                            th:text="#{admin.vouchers.formIsHot}">
+
+                                        Set as HOT Tour
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+                        <div
+                                class="d-flex justify-content-between mt-4 mb-0">
+
+                            <a
+                                    class="btn btn-secondary"
+                                    th:href="@{/admin/vouchers(lang=${#locale.language})}"
+                                    th:text="#{admin.vouchers.cancelBtn}">
+
+                                Cancel
+
+                            </a>
+
+                            <button
+                                    type="submit"
+                                    class="btn btn-warning text-dark font-weight-bold"
+                                    th:text="#{admin.vouchers.updateButton}">
+
+                                Save Changes
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script th:inline="javascript">
+
+    const voucherId =
+        /*[[${voucherId}]]*/ '';
+
+    const DRAFT_KEY =
+        'editVoucherDraft_' + voucherId;
+
+
+    function saveDraft() {
+
+        const form =
+            document.getElementById(
+                'editVoucherForm'
+            );
+
+        if (!form) {
+            return;
+        }
+
+        const draft = {};
+
+        form.querySelectorAll(
+            'input, select, textarea'
+        ).forEach(field => {
+
+            if (!field.name) {
+                return;
+            }
+
+            if (field.type === 'checkbox') {
+
+                draft[field.name] =
+                    field.checked;
+
+            } else {
+
+                draft[field.name] =
+                    field.value;
+
+            }
+        });
+
+        sessionStorage.setItem(
+            DRAFT_KEY,
+            JSON.stringify(draft)
+        );
+    }
+
+
+    function restoreDraft() {
+
+        const saved =
+            sessionStorage.getItem(
+                DRAFT_KEY
+            );
+
+        if (!saved) {
+            return;
+        }
+
+        const form =
+            document.getElementById(
+                'editVoucherForm'
+            );
+
+        if (!form) {
+            return;
+        }
+
+        try {
+
+            const draft =
+                JSON.parse(saved);
+
+            Object.entries(draft).forEach(
+                ([name, value]) => {
+
+                    const field =
+                        form.elements[name];
+
+                    if (!field) {
+                        return;
+                    }
+
+                    if (field.type === 'checkbox') {
+
+                        field.checked =
+                            value;
+
+                    } else {
+
+                        field.value =
+                            value;
+
+                    }
+                }
+            );
+
+        } catch (error) {
+
+            sessionStorage.removeItem(
+                DRAFT_KEY
+            );
+        }
+    }
+
+
+    function switchLanguage(lang) {
+
+        /*
+         * Temporarily keep unsaved changes
+         * in the browser only.
+         */
+        saveDraft();
+
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        url.searchParams.set(
+            'lang',
+            lang
+        );
+
+        window.location.href =
+            url.toString();
+    }
+
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            restoreDraft();
+
+            const form =
+                document.getElementById(
+                    'editVoucherForm'
+                );
+
+            if (form) {
+
+                form.addEventListener(
+                    'submit',
+                    function () {
+
+                        /*
+                         * The changes are now
+                         * being submitted to the server.
+                         */
+                        sessionStorage.removeItem(
+                            DRAFT_KEY
+                        );
+
+                    }
+                );
+            }
+        }
+    );
+
+</script>
+
+
+</body>
+</html>
+

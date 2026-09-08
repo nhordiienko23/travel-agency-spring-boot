@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale.language}">
 
 <head>
     <meta charset="UTF-8">
@@ -11,136 +13,213 @@
     <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dark-theme.css}">
 </head>
 
 <body class="bg-dark text-white">
 
 <div class="container mt-5" style="max-width: 500px;">
 
+
+    <!-- ========================================================= -->
     <!-- LANGUAGE SWITCH -->
+    <!-- ========================================================= -->
+
     <div class="text-right mb-2">
 
         <div class="btn-group" role="group">
 
-            <a
-                    th:href="@{/auth/sign-in(lang='en')}"
-                    class="btn btn-sm btn-outline-light">
-                EN
-            </a>
+            <button
+                    type="button"
+                    class="btn btn-sm btn-outline-light"
+                    onclick="switchLanguage('en')">
 
-            <a
-                    th:href="@{/auth/sign-in(lang='ru')}"
-                    class="btn btn-sm btn-outline-light">
+                EN
+
+            </button>
+
+            <button
+                    type="button"
+                    class="btn btn-sm btn-outline-light"
+                    onclick="switchLanguage('ru')">
+
                 RU
-            </a>
+
+            </button>
 
         </div>
 
     </div>
 
+
+    <!-- ========================================================= -->
+    <!-- LOGIN CARD -->
+    <!-- ========================================================= -->
+
     <div class="card bg-secondary shadow-sm p-4 text-white">
+
+
+        <!-- TITLE -->
 
         <h2
                 class="text-center mb-4"
                 th:text="#{login.title}">
+
             Login
+
         </h2>
 
-        <!-- LOGIN ERROR -->
+
+        <!-- ===================================================== -->
+        <!-- ERROR -->
+        <!-- ===================================================== -->
+
         <div
                 th:if="${param.error}"
                 class="alert alert-danger text-center"
                 th:text="#{login.error}">
+
             Invalid username or password
+
         </div>
 
+
+        <!-- ===================================================== -->
         <!-- BLOCKED -->
+        <!-- ===================================================== -->
+
         <div
                 th:if="${param.blocked}"
                 class="alert alert-danger text-center"
                 th:text="#{login.blocked}">
+
             Your account has been blocked by an administrator!
+
         </div>
 
-        <!-- REGISTRATION SUCCESS -->
+
+        <!-- ===================================================== -->
+        <!-- REGISTERED -->
+        <!-- ===================================================== -->
+
         <div
                 th:if="${param.registered}"
                 class="alert alert-success text-center"
                 th:text="#{login.registered}">
+
             Registration successful! Please sign in.
+
         </div>
 
+
+        <!-- ===================================================== -->
         <!-- LOGIN FORM -->
+        <!-- ===================================================== -->
+
         <form
+                id="loginForm"
                 th:action="@{/auth/sign-in}"
                 method="post">
+
+
+            <!-- USERNAME -->
 
             <div class="form-group">
 
                 <label
                         for="username"
                         th:text="#{login.username}">
+
                     Username
+
                 </label>
 
                 <input
                         type="text"
-                        class="form-control bg-dark text-white border-secondary"
                         id="username"
                         name="username"
+                        class="form-control bg-dark text-white border-secondary"
+                        autocomplete="username"
                         required>
 
             </div>
+
+
+            <!-- PASSWORD -->
 
             <div class="form-group mt-3">
 
                 <label
                         for="password"
                         th:text="#{login.password}">
+
                     Password
+
                 </label>
 
                 <input
                         type="password"
-                        class="form-control bg-dark text-white border-secondary"
                         id="password"
                         name="password"
+                        class="form-control bg-dark text-white border-secondary"
+                        autocomplete="current-password"
                         required>
 
             </div>
+
+
+            <!-- SUBMIT -->
 
             <button
                     type="submit"
                     class="btn btn-success w-100 mt-4"
                     th:text="#{login.submit}">
+
                 Sign in
+
             </button>
 
         </form>
 
+
+        <!-- ===================================================== -->
+        <!-- LINKS -->
+        <!-- ===================================================== -->
+
         <div class="mt-4 text-center">
+
 
             <p>
 
                 <span th:text="#{login.noAccount}">
+
                     Don't have an account?
+
                 </span>
 
+
                 <a
-                        th:href="@{/auth/sign-up}"
+                        th:href="@{/auth/sign-up(lang=${#locale.language})}"
                         class="text-info"
                         th:text="#{nav.signup}">
+
                     Sign up
+
                 </a>
 
             </p>
 
+
             <a
-                    th:href="@{/}"
+                    th:href="@{/(lang=${#locale.language})}"
                     class="text-muted"
                     th:text="#{nav.home}">
+
                 Back to Home
+
             </a>
 
         </div>
@@ -149,5 +228,139 @@
 
 </div>
 
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
+<script>
+
+    const LOGIN_USERNAME_KEY =
+        "loginUsername";
+
+
+    /*
+     * ---------------------------------------------------------
+     * Save username only.
+     *
+     * Password is intentionally NOT stored.
+     * ---------------------------------------------------------
+     */
+
+    function saveUsername() {
+
+        const usernameField =
+            document.getElementById("username");
+
+        if (!usernameField) {
+            return;
+        }
+
+        sessionStorage.setItem(
+            LOGIN_USERNAME_KEY,
+            usernameField.value
+        );
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Restore username after language change.
+     * ---------------------------------------------------------
+     */
+
+    function restoreUsername() {
+
+        const usernameField =
+            document.getElementById("username");
+
+        if (!usernameField) {
+            return;
+        }
+
+        const username =
+            sessionStorage.getItem(
+                LOGIN_USERNAME_KEY
+            );
+
+        if (username) {
+            usernameField.value = username;
+        }
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * Language switch.
+     *
+     * Does NOT submit the login form.
+     * Does NOT save the password.
+     * ---------------------------------------------------------
+     */
+
+    function switchLanguage(lang) {
+
+        saveUsername();
+
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        url.searchParams.set(
+            "lang",
+            lang
+        );
+
+        window.location.href =
+            url.toString();
+    }
+
+
+    /*
+     * ---------------------------------------------------------
+     * On page load.
+     * ---------------------------------------------------------
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            restoreUsername();
+
+
+            /*
+             * Remove username after successful login.
+             *
+             * A normal successful login redirects to
+             * /dashboard, so this is mostly cleanup.
+             */
+
+            const loginForm =
+                document.getElementById(
+                    "loginForm"
+                );
+
+            if (loginForm) {
+
+                loginForm.addEventListener(
+                    "submit",
+                    function () {
+
+                        sessionStorage.removeItem(
+                            LOGIN_USERNAME_KEY
+                        );
+
+                    }
+                );
+            }
+
+        }
+    );
+
+</script>
+
 </body>
 </html>
+

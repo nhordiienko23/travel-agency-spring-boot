@@ -1,97 +1,1188 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale.language}">
+
 <head>
-    <title th:text="#{profile.title}">User Profile</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+    <meta charset="UTF-8">
+
+    <title th:text="#{profile.title}">
+        User Profile
+    </title>
+
+    <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dark-theme.css}">
 </head>
+
 <body class="bg-dark text-white">
-<div class="container mt-5" style="max-width: 900px;">
-    <!-- Переключатель языков -->
-    <div class="text-right mb-2">
-        <div class="btn-group" role="group">
-            <a th:href="@{/profile(lang='en')}" class="btn btn-sm btn-outline-light">EN</a>
-            <a th:href="@{/profile(lang='ru')}" class="btn btn-sm btn-outline-light">RU</a>
+
+<div
+        class="container mt-5"
+        style="max-width: 1000px;">
+
+    <!-- ========================================================= -->
+    <!-- TOP CONTROLS -->
+    <!-- ========================================================= -->
+
+    <div
+            class="d-flex justify-content-between align-items-center mb-4">
+
+        <!-- BACK TO DASHBOARD -->
+
+        <div>
+
+            <a
+                    th:href="@{/dashboard(
+                        lang=${#locale.language}
+                    )}"
+                    class="btn btn-outline-info"
+                    th:text="#{profile.back}">
+
+                Back to Dashboard
+
+            </a>
+
         </div>
+
+        <!-- LANGUAGE SWITCH -->
+
+        <div>
+
+            <div
+                    class="btn-group"
+                    role="group">
+
+                <button
+                        type="button"
+                        class="btn btn-sm btn-outline-light"
+                        onclick="switchLanguage('en')">
+
+                    EN
+
+                </button>
+
+                <button
+                        type="button"
+                        class="btn btn-sm btn-outline-light"
+                        onclick="switchLanguage('ru')">
+
+                    RU
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- FLASH MESSAGES -->
+    <!-- ========================================================= -->
+
+    <div
+            th:if="${successMessage}"
+            class="alert alert-success text-center scroll-target"
+            th:text="${successMessage}">
+    </div>
+
+    <div
+            th:if="${errorMessage}"
+            class="alert alert-danger text-center scroll-target"
+            th:text="${errorMessage}">
     </div>
 
     <div class="row">
-        <!-- Левая колонка: Настройки профиля -->
-        <div class="col-md-6 mb-4">
-            <div class="card bg-secondary p-4 shadow text-white h-100">
-                <h2 class="text-center mb-4" th:text="#{profile.title}">Personal Account</h2>
 
-                <div th:if="${param.success}" class="alert alert-success text-center" th:text="#{profile.success}">Profile updated successfully!</div>
-                <div th:if="${param.error}" class="alert alert-danger text-center" th:text="#{profile.error}">Error: Password must be at least 4 characters long!</div>
+        <!-- ===================================================== -->
+        <!-- LEFT COLUMN -->
+        <!-- ===================================================== -->
 
-                <form th:action="@{/profile/update}" method="post">
-                    <div class="form-group">
-                        <label th:text="#{profile.username}">Username</label>
-                        <input type="text" class="form-control bg-dark text-white border-secondary" name="username" th:value="${user.username}" required>
-                    </div>
+        <div class="col-md-5 mb-4">
 
-                    <div class="form-group mt-3">
-                        <label th:text="#{profile.email}">Email</label>
-                        <input type="email" class="form-control bg-dark text-white border-secondary" name="email" th:value="${user.email}" required>
-                    </div>
+            <div
+                    class="card bg-secondary p-4 shadow text-white h-100">
 
-                    <div class="form-group mt-3">
-                        <label th:text="#{profile.lastname}">Last Name</label>
-                        <input type="text" class="form-control bg-dark text-white border-secondary" name="lastName" th:value="${user.lastName}">
-                    </div>
+                <!-- ================================================= -->
+                <!-- PERSONAL ACCOUNT -->
+                <!-- ================================================= -->
 
-                    <div class="form-group mt-3">
-                        <label th:text="#{profile.phone}">Phone Number</label>
-                        <input type="text" class="form-control bg-dark text-white border-secondary" name="phoneNumber" th:value="${user.phoneNumber}" required>
-                    </div>
+                <h2
+                        class="text-center mb-4"
+                        th:text="#{profile.personalAccount}">
 
-                    <div class="form-group mt-3">
-                        <label th:text="#{profile.balance}">Balance</label>
-                        <input type="text" class="form-control bg-dark text-white border-secondary" th:value="${user.balance}" disabled>
-                    </div>
+                    Personal Account
 
-                    <div class="form-group mt-3">
-                        <label th:text="#{profile.password}">New Password</label>
-                        <input type="password" class="form-control bg-dark text-white border-secondary" name="password" minlength="4" th:placeholder="#{profile.passwordPlaceholder}" placeholder="Leave blank to keep current">
-                    </div>
+                </h2>
 
-                    <button type="submit" class="btn btn-primary w-100 mt-4" th:text="#{profile.save}">Save Changes</button>
-                </form>
-            </div>
-        </div>
+                <!-- PROFILE SUCCESS -->
 
-        <!-- Правая колонка: Мои туры -->
-        <div class="col-md-6 mb-4">
-            <div class="card bg-secondary p-4 shadow text-white h-100">
-                <h2 class="text-center mb-4" th:text="#{dashboard.myTours}">My Purchased Tours</h2>
+                <div
+                        th:if="${param.success}"
+                        class="alert alert-success text-center scroll-target"
+                        th:text="#{profile.success}">
 
-                <div class="table-responsive">
-                    <table class="table table-dark table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th th:text="#{dashboard.titleCol}">Title</th>
-                            <th th:text="#{dashboard.statusCol}">Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:if="${#lists.isEmpty(myVouchers)}">
-                            <td colspan="2" class="text-center" th:text="#{dashboard.noMyTours}">You haven't purchased any tours yet.</td>
-                        </tr>
-                        <tr th:each="v : ${myVouchers}">
-                            <td th:text="${v.title}"></td>
-                            <td><span class="badge badge-success" th:text="${v.status}"></span></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    Profile updated successfully!
+
                 </div>
+
+                <!-- PASSWORD SUCCESS -->
+
+                <div
+                        th:if="${param.passwordChanged}"
+                        class="alert alert-success text-center scroll-target"
+                        th:text="#{profile.passwordChanged}">
+
+                    Password updated successfully!
+
+                </div>
+
+                <!-- BALANCE SUCCESS -->
+
+                <div
+                        th:if="${param.balanceSuccess}"
+                        class="alert alert-success text-center scroll-target"
+                        th:text="#{profile.balanceSuccess}">
+
+                    Balance updated successfully!
+
+                </div>
+
+                <!-- ================================================= -->
+                <!-- PROFILE FORM -->
+                <!-- ================================================= -->
+
+                <form
+                        id="profileUpdateForm"
+                        th:action="@{/profile/update}"
+                        method="post"
+                        th:object="${updateProfileRequest}">
+
+                    <!-- USERNAME -->
+
+                    <div class="form-group">
+
+                        <label
+                                th:text="#{profile.username}">
+
+                            Username
+
+                        </label>
+
+                        <input
+                                type="text"
+                                class="form-control bg-dark text-white border-secondary"
+                                th:field="*{username}">
+
+                        <div
+                                class="text-warning small mt-1 scroll-target"
+                                th:if="${#fields.hasErrors('username')}"
+                                th:errors="*{username}">
+                        </div>
+
+                    </div>
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group mt-3">
+
+                        <label
+                                th:text="#{profile.email}">
+
+                            Email
+
+                        </label>
+
+                        <input
+                                type="email"
+                                class="form-control bg-dark text-white border-secondary"
+                                th:field="*{email}">
+
+                        <div
+                                class="text-warning small mt-1 scroll-target"
+                                th:if="${#fields.hasErrors('email')}"
+                                th:errors="*{email}">
+                        </div>
+
+                    </div>
+
+                    <!-- LAST NAME -->
+
+                    <div class="form-group mt-3">
+
+                        <label
+                                th:text="#{profile.lastname}">
+
+                            Last Name
+
+                        </label>
+
+                        <input
+                                type="text"
+                                class="form-control bg-dark text-white border-secondary"
+                                th:field="*{lastName}">
+
+                        <div
+                                class="text-warning small mt-1 scroll-target"
+                                th:if="${#fields.hasErrors('lastName')}"
+                                th:errors="*{lastName}">
+                        </div>
+
+                    </div>
+
+                    <!-- PHONE -->
+
+                    <div class="form-group mt-3">
+
+                        <label
+                                th:text="#{profile.phone}">
+
+                            Phone Number
+
+                        </label>
+
+                        <input
+                                type="text"
+                                class="form-control bg-dark text-white border-secondary"
+                                th:field="*{phoneNumber}">
+
+                        <div
+                                class="text-warning small mt-1 scroll-target"
+                                th:if="${#fields.hasErrors('phoneNumber')}"
+                                th:errors="*{phoneNumber}">
+                        </div>
+
+                    </div>
+
+                    <!-- BALANCE DISPLAY -->
+
+                    <div class="form-group mt-3">
+
+                        <label
+                                th:text="#{profile.currentBalance}">
+
+                            Current Balance ($)
+
+                        </label>
+
+                        <input
+                                type="text"
+                                class="form-control bg-dark text-white border-secondary font-weight-bold"
+                                th:value="${user.balance != null
+                                    ? #numbers.formatDecimal(
+                                        user.balance,
+                                        1,
+                                        'NONE',
+                                        2,
+                                        'POINT'
+                                      )
+                                    : '0.00'}"
+                                disabled>
+
+                    </div>
+
+                    <!-- SAVE -->
+
+                    <button
+                            type="submit"
+                            class="btn btn-primary w-100 mt-4"
+                            th:text="#{profile.saveChanges}">
+
+                        Save Profile Changes
+
+                    </button>
+
+                </form>
+
+                <hr class="border-light mt-4 mb-4">
+
+                <!-- ================================================= -->
+                <!-- CHANGE PASSWORD -->
+                <!-- ================================================= -->
+
+                <form
+                        id="profilePasswordForm"
+                        th:action="@{/profile/password}"
+                        method="post"
+                        th:object="${changePasswordRequest}">
+
+                    <h5
+                            class="mb-3"
+                            th:text="#{profile.changePassword}">
+
+                        Change Password
+
+                    </h5>
+
+                    <!-- CURRENT PASSWORD -->
+
+                    <div class="form-group mt-3">
+
+                        <label
+                                th:text="#{profile.currentPassword}">
+
+                            Current Password
+
+                        </label>
+
+                        <input
+                                type="password"
+                                class="form-control bg-dark text-white border-secondary"
+                                th:field="*{currentPassword}">
+
+                        <div
+                                class="text-warning small mt-1 scroll-target"
+                                th:if="${#fields.hasErrors('currentPassword')}"
+                                th:errors="*{currentPassword}">
+                        </div>
+
+                    </div>
+
+                    <!-- NEW PASSWORD -->
+
+                    <div class="form-group mt-3">
+
+                        <label
+                                th:text="#{profile.newPassword}">
+
+                            New Password
+
+                        </label>
+
+                        <input
+                                type="password"
+                                class="form-control bg-dark text-white border-secondary"
+                                th:field="*{newPassword}">
+
+                        <div
+                                class="text-warning small mt-1 scroll-target"
+                                th:if="${#fields.hasErrors('newPassword')}"
+                                th:errors="*{newPassword}">
+                        </div>
+
+                    </div>
+
+                    <!-- UPDATE PASSWORD -->
+
+                    <button
+                            type="submit"
+                            class="btn btn-warning w-100 mt-4"
+                            th:text="#{profile.updatePassword}">
+
+                        Update Password
+
+                    </button>
+
+                </form>
+
+                <hr class="border-light mt-4 mb-4">
+
+                <!-- ================================================= -->
+                <!-- BALANCE -->
+                <!-- ================================================= -->
+
+                <form
+                        id="profileBalanceForm"
+                        th:action="@{/profile/balance}"
+                        method="post"
+                        th:object="${depositBalanceRequest}">
+
+                    <h5
+                            class="mb-3"
+                            th:text="#{profile.topUp}">
+
+                        Top Up Balance
+
+                    </h5>
+
+                    <!-- AMOUNT -->
+
+                    <div class="form-group mt-3">
+
+                        <label
+                                th:text="#{profile.amount}">
+
+                            Amount ($)
+
+                        </label>
+
+                        <input
+                                type="text"
+                                inputmode="decimal"
+                                maxlength="10"
+                                class="form-control bg-dark text-white border-secondary"
+                                th:field="*{amount}"
+                                placeholder="0.00"
+                                oninput="formatAmount(this)">
+
+                        <div
+                                class="text-warning small mt-1 scroll-target"
+                                th:if="${#fields.hasErrors('amount')}"
+                                th:errors="*{amount}">
+                        </div>
+
+                    </div>
+
+                    <!-- ADD FUNDS -->
+
+                    <button
+                            type="submit"
+                            class="btn btn-success w-100 mt-4"
+                            th:text="#{profile.addFunds}">
+
+                        Add Funds
+
+                    </button>
+
+                </form>
+
+                <hr class="border-light mt-4 mb-4">
+
+                <!-- ================================================= -->
+                <!-- DELETE ACCOUNT -->
+                <!-- ================================================= -->
+
+                <div>
+
+                    <h5
+                            class="text-danger mb-2"
+                            th:text="#{profile.deleteAccount}">
+
+                        Delete Account
+
+                    </h5>
+
+                    <p
+                            class="text-light small mb-3"
+                            th:text="#{profile.deleteAccountWarning}">
+
+                        This action is permanent and cannot be undone.
+
+                    </p>
+
+                    <form
+                            th:action="@{/profile/delete}"
+                            method="post"
+                            th:onsubmit="|return confirmDeleteAccount('#{profile.deleteConfirm}');|">
+
+                        <button
+                                type="submit"
+                                class="btn btn-danger w-100"
+                                th:text="#{profile.deleteAccountButton}">
+
+                            Delete My Account
+
+                        </button>
+
+                    </form>
+
+                </div>
+
             </div>
+
         </div>
+
+        <!-- ===================================================== -->
+        <!-- RIGHT COLUMN -->
+        <!-- ===================================================== -->
+
+        <div class="col-md-7 mb-4">
+
+            <div
+                    class="card bg-secondary p-4 shadow text-white h-100 d-flex flex-column justify-content-between">
+
+                <div>
+
+                    <h2
+                            class="text-center mb-4"
+                            th:text="#{dashboard.myTours}">
+
+                        My Purchased Tours
+
+                    </h2>
+
+                    <div class="table-responsive">
+
+                        <table
+                                class="table table-dark table-striped table-bordered"
+                                style="table-layout: fixed; width: 100%; word-wrap: break-word;">
+
+                            <thead>
+
+                            <tr>
+
+                                <th
+                                        style="width: 35%;"
+                                        th:text="#{dashboard.titleCol}">
+
+                                    Title
+
+                                </th>
+
+                                <th
+                                        style="width: 30%;"
+                                        th:text="#{dashboard.datesCol}">
+
+                                    Dates
+
+                                </th>
+
+                                <th
+                                        style="width: 15%;"
+                                        th:text="#{dashboard.statusCol}">
+
+                                    Status
+
+                                </th>
+
+                                <th
+                                        style="width: 20%;"
+                                        class="text-center"
+                                        th:text="#{dashboard.actionCol}">
+
+                                    Action
+
+                                </th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <!-- EMPTY -->
+
+                            <tr
+                                    th:if="${#lists.isEmpty(myVouchersPage.content)}">
+
+                                <td
+                                        colspan="4"
+                                        class="text-center"
+                                        th:text="#{dashboard.noMyTours}">
+
+                                    You haven't purchased any tours yet.
+
+                                </td>
+
+                            </tr>
+
+                            <!-- VOUCHERS -->
+
+                            <tr
+                                    th:each="v : ${myVouchersPage.content}">
+
+                                <!-- TITLE -->
+
+                                <td
+                                        class="align-middle"
+                                        style="word-break: break-all;"
+                                        th:text="${v.title}">
+                                </td>
+
+                                <!-- DATES -->
+
+                                <td
+                                        class="small align-middle text-nowrap">
+
+                                    <span
+                                            th:text="${v.arrivalDate}">
+                                    </span>
+
+                                    <br>
+
+                                    <span
+                                            th:text="${v.evictionDate}">
+                                    </span>
+
+                                </td>
+
+                                <!-- STATUS -->
+
+                                <td
+                                        class="align-middle text-center">
+
+                                    <span
+                                            th:class="${v.status == 'PAID'
+                                                ? 'badge badge-success'
+                                                : 'badge badge-info'}"
+                                            th:text="${v.status}">
+                                    </span>
+
+                                </td>
+
+                                <!-- CANCEL -->
+
+                                <td
+                                        class="align-middle text-center">
+
+                                    <form
+                                            th:action="@{/vouchers/cancel}"
+                                            method="post"
+                                            class="m-0">
+
+                                        <input
+                                                type="hidden"
+                                                name="voucherId"
+                                                th:value="${v.id}">
+
+                                        <button
+                                                class="btn btn-danger btn-sm"
+                                                type="submit"
+                                                th:text="#{dashboard.cancel}">
+
+                                            Cancel
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <!-- ================================================= -->
+                <!-- PAGINATION -->
+                <!-- ================================================= -->
+
+                <nav
+                        th:if="${myVouchersPage.totalPages > 1}"
+                        class="mt-3">
+
+                    <ul
+                            class="pagination pagination-sm justify-content-center mb-0">
+
+                        <!-- PREVIOUS -->
+
+                        <li
+                                class="page-item"
+                                th:classappend="${myVouchersPage.first}
+                                    ? 'disabled'">
+
+                            <a
+                                    class="page-link bg-dark text-white border-secondary"
+
+                                    th:href="@{/profile(
+                                        page=${myVouchersPage.number - 1},
+                                        lang=${#locale.language}
+                                    )}"
+
+                                    th:text="#{nav.previous}">
+
+                                Prev
+
+                            </a>
+
+                        </li>
+
+                        <!-- PAGE NUMBERS -->
+
+                        <li
+                                class="page-item"
+                                th:each="i : ${#numbers.sequence(
+                                    0,
+                                    myVouchersPage.totalPages - 1
+                                )}"
+
+                                th:classappend="${myVouchersPage.number == i}
+                                    ? 'active'">
+
+                            <a
+                                    class="page-link bg-dark text-white border-secondary"
+
+                                    th:href="@{/profile(
+                                        page=${i},
+                                        lang=${#locale.language}
+                                    )}"
+
+                                    th:text="${i + 1}">
+
+                                1
+
+                            </a>
+
+                        </li>
+
+                        <!-- NEXT -->
+
+                        <li
+                                class="page-item"
+                                th:classappend="${myVouchersPage.last}
+                                    ? 'disabled'">
+
+                            <a
+                                    class="page-link bg-dark text-white border-secondary"
+
+                                    th:href="@{/profile(
+                                        page=${myVouchersPage.number + 1},
+                                        lang=${#locale.language}
+                                    )}"
+
+                                    th:text="#{nav.next}">
+
+                                Next
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- Кнопка возврата -->
-    <div class="text-center mt-3 mb-5">
-        <a th:href="@{/dashboard}" class="btn btn-outline-info" th:text="#{profile.back}">Back to Dashboard</a>
-    </div>
 </div>
+
+<script>
+
+    /*
+     * ------------------------------------------------------------
+     * Draft keys
+     * ------------------------------------------------------------
+     */
+
+    const PROFILE_DRAFT_KEY =
+        "profileUpdateDraft";
+
+    const PASSWORD_DRAFT_KEY =
+        "profilePasswordDraft";
+
+    const BALANCE_DRAFT_KEY =
+        "profileBalanceDraft";
+
+
+    /*
+     * ------------------------------------------------------------
+     * Scroll to validation / flash message
+     * ------------------------------------------------------------
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const targetElement =
+                document.querySelector(
+                    ".scroll-target"
+                );
+
+            if (targetElement) {
+
+                targetElement.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+            restoreProfileDraft();
+            restorePasswordDraft();
+            restoreBalanceDraft();
+
+            /*
+             * Remove drafts after successful
+             * server-side operations.
+             */
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            if (params.has("success")) {
+
+                sessionStorage.removeItem(
+                    PROFILE_DRAFT_KEY
+                );
+            }
+
+            if (params.has("passwordChanged")) {
+
+                sessionStorage.removeItem(
+                    PASSWORD_DRAFT_KEY
+                );
+            }
+
+            if (params.has("balanceSuccess")) {
+
+                sessionStorage.removeItem(
+                    BALANCE_DRAFT_KEY
+                );
+            }
+
+        }
+    );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Generic draft helpers
+     * ------------------------------------------------------------
+     */
+
+    function saveFormDraft(
+        formId,
+        storageKey
+    ) {
+
+        const form =
+            document.getElementById(
+                formId
+            );
+
+        if (!form) {
+            return;
+        }
+
+        const draft = {};
+
+        form.querySelectorAll(
+            "input, select, textarea"
+        ).forEach(field => {
+
+            if (!field.name) {
+                return;
+            }
+
+            if (field.disabled) {
+                return;
+            }
+
+            if (field.type === "checkbox") {
+
+                draft[field.name] =
+                    field.checked;
+
+            } else {
+
+                draft[field.name] =
+                    field.value;
+
+            }
+
+        });
+
+        sessionStorage.setItem(
+            storageKey,
+            JSON.stringify(draft)
+        );
+    }
+
+
+    function restoreFormDraft(
+        formId,
+        storageKey
+    ) {
+
+        const saved =
+            sessionStorage.getItem(
+                storageKey
+            );
+
+        if (!saved) {
+            return;
+        }
+
+        const form =
+            document.getElementById(
+                formId
+            );
+
+        if (!form) {
+            return;
+        }
+
+        try {
+
+            const draft =
+                JSON.parse(saved);
+
+            Object.entries(draft).forEach(
+                ([name, value]) => {
+
+                    const field =
+                        form.elements[name];
+
+                    if (!field) {
+                        return;
+                    }
+
+                    if (field.type === "checkbox") {
+
+                        field.checked =
+                            value;
+
+                    } else {
+
+                        field.value =
+                            value;
+
+                    }
+
+                }
+            );
+
+        } catch (error) {
+
+            sessionStorage.removeItem(
+                storageKey
+            );
+        }
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Profile draft
+     * ------------------------------------------------------------
+     */
+
+    function saveProfileDraft() {
+
+        saveFormDraft(
+            "profileUpdateForm",
+            PROFILE_DRAFT_KEY
+        );
+    }
+
+
+    function restoreProfileDraft() {
+
+        restoreFormDraft(
+            "profileUpdateForm",
+            PROFILE_DRAFT_KEY
+        );
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Password draft
+     * ------------------------------------------------------------
+     */
+
+    function savePasswordDraft() {
+
+        saveFormDraft(
+            "profilePasswordForm",
+            PASSWORD_DRAFT_KEY
+        );
+    }
+
+
+    function restorePasswordDraft() {
+
+        restoreFormDraft(
+            "profilePasswordForm",
+            PASSWORD_DRAFT_KEY
+        );
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Balance draft
+     * ------------------------------------------------------------
+     */
+
+    function saveBalanceDraft() {
+
+        saveFormDraft(
+            "profileBalanceForm",
+            BALANCE_DRAFT_KEY
+        );
+    }
+
+
+    function restoreBalanceDraft() {
+
+        restoreFormDraft(
+            "profileBalanceForm",
+            BALANCE_DRAFT_KEY
+        );
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Language switch
+     * ------------------------------------------------------------
+     */
+
+    function switchLanguage(lang) {
+
+        saveProfileDraft();
+        savePasswordDraft();
+        saveBalanceDraft();
+
+        const url =
+            new URL(
+                window.location.href
+            );
+
+        url.searchParams.set(
+            "lang",
+            lang
+        );
+
+        window.location.href =
+            url.toString();
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Remove drafts after actual form submission
+     * ------------------------------------------------------------
+     */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const profileForm =
+                document.getElementById(
+                    "profileUpdateForm"
+                );
+
+            if (profileForm) {
+
+                profileForm.addEventListener(
+                    "submit",
+                    function () {
+
+                        sessionStorage.removeItem(
+                            PROFILE_DRAFT_KEY
+                        );
+
+                    }
+                );
+            }
+
+            const passwordForm =
+                document.getElementById(
+                    "profilePasswordForm"
+                );
+
+            if (passwordForm) {
+
+                passwordForm.addEventListener(
+                    "submit",
+                    function () {
+
+                        sessionStorage.removeItem(
+                            PASSWORD_DRAFT_KEY
+                        );
+
+                    }
+                );
+            }
+
+            const balanceForm =
+                document.getElementById(
+                    "profileBalanceForm"
+                );
+
+            if (balanceForm) {
+
+                balanceForm.addEventListener(
+                    "submit",
+                    function () {
+
+                        sessionStorage.removeItem(
+                            BALANCE_DRAFT_KEY
+                        );
+
+                    }
+                );
+            }
+
+        }
+    );
+
+
+    /*
+     * ------------------------------------------------------------
+     * Delete account confirmation
+     * ------------------------------------------------------------
+     */
+
+    function confirmDeleteAccount(message) {
+
+        return confirm(message);
+
+    }
+
+
+    /*
+     * ------------------------------------------------------------
+     * Balance formatting
+     * ------------------------------------------------------------
+     */
+
+    function formatAmount(input) {
+
+        input.value =
+            input.value.replace(
+                /[^0-9.]/g,
+                ""
+            );
+
+        if (
+            (input.value.match(/\./g) || [])
+                .length > 1
+        ) {
+
+            input.value =
+                input.value.slice(
+                    0,
+                    -1
+                );
+
+        }
+
+        if (
+            input.value.includes(".")
+        ) {
+
+            let parts =
+                input.value.split(".");
+
+            if (
+                parts[1].length > 2
+            ) {
+
+                input.value =
+                    parts[0]
+                    + "."
+                    + parts[1].substring(
+                        0,
+                        2
+                    );
+
+            }
+
+        }
+
+    }
+
+</script>
+
 </body>
 </html>
