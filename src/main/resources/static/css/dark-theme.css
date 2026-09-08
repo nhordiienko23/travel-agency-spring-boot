@@ -1,6 +1,7 @@
-/* =========================================================
-   Travel Agency - Dark Theme
-   ========================================================= */
+
+    /* =========================================================
+       Travel Agency - Dark Theme
+       ========================================================= */
 
 :root {
     --bg-main: #121212;
@@ -9,28 +10,62 @@
     --text-primary: #e0e0e0;
     --text-secondary: #a0a0a0;
     --border-color: #333333;
+
     --accent-primary: #4e73df;
     --accent-hover: #375aca;
 
-    /* Цвета для горящих туров (HOT) */
-    --bg-hot: rgba(231, 74, 59, 0.15); /* Глубокий, полупрозрачный красный оттенок */
+    /* HOT */
+    --bg-hot: rgba(231, 74, 59, 0.15);
     --bg-hot-hover: rgba(231, 74, 59, 0.25);
     --badge-hot: #e74a3b;
 }
 
-/* --- Global Background & Text --- */
-body, #page-top, #wrapper, #content-wrapper, #content, .bg-light, .bg-white {
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
     background-color: var(--bg-main) !important;
     color: var(--text-primary) !important;
 }
 
-/* --- Override SB Admin 2 Light Utilities --- */
-.text-gray-800, .text-gray-600, .text-dark, .text-muted {
+#page-top,
+#wrapper,
+#content-wrapper,
+#content {
+    background-color: var(--bg-main) !important;
     color: var(--text-primary) !important;
 }
 
-/* --- Cards & Panels --- */
-.card, .card-header, .card-body, .modal-content {
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+.text-gray-800,
+.text-gray-600,
+.text-dark,
+.text-muted {
+    color: var(--text-primary) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+
+/* =========================================================
+   CARDS / PANELS
+   ========================================================= */
+
+.card,
+.card-header,
+.card-body,
+.modal-content {
     background-color: var(--bg-panel) !important;
     border-color: var(--border-color) !important;
     color: var(--text-primary) !important;
@@ -41,15 +76,22 @@ body, #page-top, #wrapper, #content-wrapper, #content, .bg-light, .bg-white {
 }
 
 .card-header h6 {
-    color: #7b93ff !important; /* Яркий акцент для заголовков */
+    color: #7b93ff !important;
 }
 
-/* --- Tables --- */
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
 .table {
     color: var(--text-primary) !important;
+    background-color: var(--bg-panel) !important;
 }
 
-.table-bordered, .table-bordered th, .table-bordered td {
+.table-bordered,
+.table-bordered th,
+.table-bordered td {
     border-color: var(--border-color) !important;
 }
 
@@ -59,12 +101,22 @@ body, #page-top, #wrapper, #content-wrapper, #content, .bg-light, .bg-white {
     color: #ffffff !important;
 }
 
+.table tbody tr {
+    background-color: var(--bg-panel) !important;
+}
+
 .table tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
-/* --- Hot Tours Highlight (Override Bootstrap's .table-danger) --- */
-.table-danger, .table-danger > td, .table-danger > th {
+
+/* =========================================================
+   HOT TOURS
+   ========================================================= */
+
+.table-danger,
+.table-danger > td,
+.table-danger > th {
     background-color: var(--bg-hot) !important;
     color: var(--text-primary) !important;
     border-color: var(--border-color) !important;
@@ -76,24 +128,36 @@ body, #page-top, #wrapper, #content-wrapper, #content, .bg-light, .bg-white {
     background-color: var(--bg-hot-hover) !important;
 }
 
-/* --- Badges --- */
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
 .badge-danger {
     background-color: var(--badge-hot) !important;
     color: #ffffff !important;
 }
 
-/* --- Forms & Inputs --- */
-.form-control, .custom-select {
+
+/* =========================================================
+   FORMS
+   ========================================================= */
+
+.form-control,
+.custom-select {
     background-color: var(--bg-input) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-primary) !important;
 }
 
-.form-control:focus {
+.form-control:focus,
+.custom-select:focus {
     background-color: #383838 !important;
     border-color: var(--accent-primary) !important;
-    color: #fff !important;
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25) !important;
+    color: #ffffff !important;
+    box-shadow:
+            0 0 0 0.2rem
+            rgba(78, 115, 223, 0.25) !important;
 }
 
 .form-control::placeholder {
@@ -105,28 +169,51 @@ select option {
     color: var(--text-primary);
 }
 
-/* --- Topbar & Navbar --- */
-.topbar, .navbar {
+
+/* =========================================================
+   TOPBAR / NAVBAR
+   ========================================================= */
+
+.topbar,
+.navbar {
     background-color: var(--bg-panel) !important;
     border-bottom: 1px solid var(--border-color) !important;
 }
 
-.topbar .nav-link, .topbar .dropdown-toggle, .navbar-brand {
+.topbar .nav-link,
+.topbar .dropdown-toggle,
+.navbar-brand,
+.navbar-text {
     color: var(--text-primary) !important;
 }
 
-/* --- Buttons --- */
-.btn-light, .btn-outline-secondary, .btn-outline-light, .btn-outline-dark {
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn-light,
+.btn-outline-secondary,
+.btn-outline-light,
+.btn-outline-dark {
     background-color: var(--bg-input) !important;
     border-color: var(--border-color) !important;
     color: var(--text-primary) !important;
 }
 
-.btn-light:hover, .btn-outline-secondary:hover, .btn-outline-light:hover {
+.btn-light:hover,
+.btn-outline-secondary:hover,
+.btn-outline-light:hover,
+.btn-outline-dark:hover {
     background-color: #3d3d3d !important;
-    color: #ffffff !important;
     border-color: #555555 !important;
+    color: #ffffff !important;
 }
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
 
 .page-link {
     background-color: var(--bg-panel) !important;
@@ -134,10 +221,16 @@ select option {
     color: var(--accent-primary) !important;
 }
 
+.page-link:hover {
+    background-color: #2a2a2a !important;
+    border-color: #555555 !important;
+    color: #7b93ff !important;
+}
+
 .page-item.active .page-link {
     background-color: var(--accent-primary) !important;
     border-color: var(--accent-primary) !important;
-    color: #fff !important;
+    color: #ffffff !important;
 }
 
 .page-item.disabled .page-link {
@@ -146,17 +239,74 @@ select option {
     border-color: var(--border-color) !important;
 }
 
-/* --- Sidebar Specifics --- */
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
 .sidebar {
     border-right: 1px solid var(--border-color) !important;
 }
+
 .sidebar-dark .nav-item .nav-link {
     color: rgba(255, 255, 255, 0.7) !important;
 }
+
 .sidebar-dark .nav-item .nav-link:hover {
     color: #ffffff !important;
 }
+
 .sidebar-dark .nav-item.active .nav-link {
     font-weight: 700;
     color: #ffffff !important;
 }
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+a {
+    color: var(--accent-primary);
+}
+
+a:hover {
+    color: var(--accent-hover);
+}
+
+
+/* =========================================================
+   ALERTS
+   ========================================================= */
+
+.alert {
+    border-color: var(--border-color) !important;
+}
+
+
+/* =========================================================
+   USER ACTIONS
+   ========================================================= */
+
+td .d-flex {
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+
+/* =========================================================
+   REMOVE UNWANTED LIGHT BACKGROUNDS
+   ========================================================= */
+
+.bg-white {
+    background-color: var(--bg-panel) !important;
+}
+
+.bg-light {
+    background-color: var(--bg-panel) !important;
+}
+
+.bg-secondary {
+    background-color: var(--bg-panel) !important;
+}
+

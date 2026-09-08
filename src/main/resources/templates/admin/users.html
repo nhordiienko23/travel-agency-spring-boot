@@ -1,151 +1,843 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale.language}">
+
 <head>
+
     <meta charset="utf-8">
-    <title th:text="#{admin.users.title}">Users Management</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/dark-theme.css}">
+
+    <title th:text="#{admin.users.title}">
+        Users Management
+    </title>
+
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+            rel="stylesheet">
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css"
+            rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dark-theme.css}">
+
 </head>
 
+
 <body id="page-top">
+
 <div id="wrapper">
 
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
+
+    <!-- ========================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================================================= -->
+
+    <ul
+            class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+            id="accordionSidebar">
+
+        <a
+                class="sidebar-brand d-flex align-items-center justify-content-center"
+                th:href="@{/dashboard(lang=${#locale.language})}">
+
             <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas" style="font-style: normal;">✈️</i>
+
+                <i
+                        class="fas"
+                        style="font-style: normal;">
+                    ✈️
+                </i>
+
             </div>
-            <div class="sidebar-brand-text mx-3">Travel Admin</div>
+
+            <div
+                    class="sidebar-brand-text mx-3"
+                    th:text="#{index.brand}">
+                Travel Agency
+            </div>
+
         </a>
 
         <hr class="sidebar-divider my-0">
 
+
+        <!-- USERS -->
+
         <li class="nav-item active">
-            <a class="nav-link" href="/admin/users">
+
+            <a
+                    class="nav-link"
+                    th:href="@{/admin/users(lang=${#locale.language})}">
+
                 <i class="fas fa-fw fa-users"></i>
-                <span th:text="#{admin.users.nav}">Users Management</span></a>
-        </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="/dashboard">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span th:text="#{admin.dashboard.nav}">Client Dashboard</span></a>
-        </li>
+                <span th:text="#{admin.users.nav}">
+                    Users Management
+                </span>
 
-        <li class="nav-item">
-            <a class="nav-link" href="/admin/vouchers">
-                <i class="fas fa-fw fa-plane"></i>
-                <span th:text="#{admin.vouchers.nav}">Vouchers Management</span>
             </a>
-        </li>
-        <hr class="sidebar-divider d-none d-md-block">
-    </ul>
-    <!-- End of Sidebar -->
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
+        </li>
+
+
+        <!-- DASHBOARD -->
+
+        <li class="nav-item">
+
+            <a
+                    class="nav-link"
+                    th:href="@{/dashboard(lang=${#locale.language})}">
+
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+
+                <span th:text="#{admin.dashboard.nav}">
+                    Client Dashboard
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- VOUCHERS -->
+
+        <li class="nav-item">
+
+            <a
+                    class="nav-link"
+                    th:href="@{/admin/vouchers(lang=${#locale.language})}">
+
+                <i class="fas fa-fw fa-plane"></i>
+
+                <span th:text="#{admin.vouchers.nav}">
+                    Vouchers Management
+                </span>
+
+            </a>
+
+        </li>
+
+        <hr class="sidebar-divider d-none d-md-block">
+
+    </ul>
+
+
+    <!-- ========================================================= -->
+    <!-- CONTENT WRAPPER -->
+    <!-- ========================================================= -->
+
+    <div
+            id="content-wrapper"
+            class="d-flex flex-column">
+
         <div id="content">
 
-            <!-- Topbar -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-                <ul class="navbar-nav ml-auto align-items-center">
-                    <!-- Переключатель языков -->
-                    <li class="nav-item mr-3">
-                        <div class="btn-group" role="group">
-                            <a th:href="@{/admin/users(lang='en', keyword=${keyword}, page=${currentPage})}" class="btn btn-sm btn-outline-secondary">EN</a>
-                            <a th:href="@{/admin/users(lang='ru', keyword=${keyword}, page=${currentPage})}" class="btn btn-sm btn-outline-secondary">RU</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small" th:text="#{admin.administrator}">Administrator</span>
-                        </a>
-                    </li>
-                    <div class="topbar-divider d-none d-sm-block"></div>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger font-weight-bold" th:href="@{/auth/logout}">
-                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i> <span th:text="#{dashboard.logout}">Logout</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <!-- End of Topbar -->
 
-            <!-- Begin Page Content -->
+            <!-- ================================================= -->
+            <!-- TOPBAR -->
+            <!-- ================================================= -->
+
+            <nav
+                    class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <ul
+                        class="navbar-nav ml-auto align-items-center">
+
+                    <!-- LANGUAGE -->
+
+                    <li class="nav-item mr-3">
+
+                        <div
+                                class="btn-group"
+                                role="group">
+
+                            <a
+                                    class="btn btn-sm btn-outline-secondary"
+                                    th:href="@{/admin/users(
+                                        lang='en',
+                                        page=${currentPage},
+                                        sortBy=${sortBy},
+                                        sortDir=${sortDir},
+                                        username=${searchRequest.username},
+                                        phoneNumber=${searchRequest.phoneNumber},
+                                        role=${searchRequest.role},
+                                        active=${searchRequest.active}
+                                    )}">
+                                EN
+                            </a>
+
+                            <a
+                                    class="btn btn-sm btn-outline-secondary"
+                                    th:href="@{/admin/users(
+                                        lang='ru',
+                                        page=${currentPage},
+                                        sortBy=${sortBy},
+                                        sortDir=${sortDir},
+                                        username=${searchRequest.username},
+                                        phoneNumber=${searchRequest.phoneNumber},
+                                        role=${searchRequest.role},
+                                        active=${searchRequest.active}
+                                    )}">
+                                RU
+                            </a>
+
+                        </div>
+
+                    </li>
+
+                    <li
+                            class="topbar-divider d-none d-sm-block">
+                    </li>
+
+
+                    <!-- ADMIN -->
+
+                    <li class="nav-item">
+
+                        <span
+                                class="nav-link">
+
+                            <span
+                                    class="mr-2 d-none d-lg-inline text-gray-600 small"
+                                    th:text="#{admin.administrator}">
+                                Administrator
+                            </span>
+
+                        </span>
+
+                    </li>
+
+
+                    <li
+                            class="topbar-divider d-none d-sm-block">
+                    </li>
+
+
+                    <!-- LOGOUT -->
+
+                    <li class="nav-item">
+
+                        <a
+                                class="nav-link text-danger font-weight-bold"
+                                th:href="@{/auth/logout}">
+
+                            <i
+                                    class="fas fa-sign-out-alt fa-sm fa-fw mr-2">
+                            </i>
+
+                            <span th:text="#{dashboard.logout}">
+                                Logout
+                            </span>
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+
+
+            <!-- ================================================= -->
+            <!-- PAGE CONTENT -->
+            <!-- ================================================= -->
+
             <div class="container-fluid">
-                <h1 class="h3 mb-4 text-gray-800" th:text="#{admin.users.heading}">Users Control Panel</h1>
+
+
+                <!-- TITLE -->
+
+                <h1
+                        class="h3 mb-4 text-gray-800"
+                        th:text="#{admin.users.heading}">
+
+                    Users Control Panel
+
+                </h1>
+
+
+                <!-- ================================================= -->
+                <!-- SEARCH -->
+                <!-- ================================================= -->
 
                 <div class="card shadow mb-4">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary" th:text="#{admin.users.tableTitle}">Registered Users Data Table</h6>
 
-                        <!-- Search Form -->
-                        <form th:action="@{/admin/users}" method="get" class="form-inline mb-4 justify-content-center">
-                            <div class="input-group" style="width: 400px;">
-                                <input type="text" name="keyword" th:value="${keyword}" class="form-control bg-light border-0 small" th:placeholder="#{admin.users.searchPlaceholder}" placeholder="Search..." />
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="submit" th:text="#{admin.search}">Search</button>
-                                    <a th:href="@{/admin/users}" class="btn btn-secondary ml-1" th:text="#{admin.clear}">Clear</a>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="card-header py-3">
+
+                        <h6
+                                class="m-0 font-weight-bold text-primary"
+                                th:text="#{admin.users.tableTitle}">
+
+                            Registered Users Data Table
+
+                        </h6>
+
                     </div>
+
+
                     <div class="card-body">
+
+                        <form
+                                th:action="@{/admin/users}"
+                                method="get"
+                                th:object="${searchRequest}"
+                                class="form-row align-items-end">
+
+
+                            <!-- LANGUAGE -->
+
+                            <input
+                                    type="hidden"
+                                    name="lang"
+                                    th:value="${#locale.language}">
+
+
+                            <!-- USERNAME -->
+
+                            <div class="col-md-3 mb-2">
+
+                                <label
+                                        class="small text-muted mb-1"
+                                        th:text="#{admin.users.username}">
+
+                                    Username
+
+                                </label>
+
+                                <input
+                                        type="text"
+                                        th:field="*{username}"
+                                        class="form-control form-control-sm bg-light border-0"
+                                        th:placeholder="#{admin.users.username}">
+
+                            </div>
+
+
+                            <!-- PHONE -->
+
+                            <div class="col-md-3 mb-2">
+
+                                <label
+                                        class="small text-muted mb-1"
+                                        th:text="#{admin.users.phone}">
+
+                                    Phone
+
+                                </label>
+
+                                <input
+                                        type="text"
+                                        th:field="*{phoneNumber}"
+                                        class="form-control form-control-sm bg-light border-0"
+                                        th:placeholder="#{admin.users.phone}">
+
+                            </div>
+
+
+                            <!-- ROLE -->
+
+                            <div class="col-md-2 mb-2">
+
+                                <label
+                                        class="small text-muted mb-1"
+                                        th:text="#{admin.users.role}">
+
+                                    Role
+
+                                </label>
+
+                                <select
+                                        th:field="*{role}"
+                                        class="form-control form-control-sm bg-light border-0">
+
+                                    <option
+                                            value=""
+                                            th:text="#{search.all}">
+                                        All Roles
+                                    </option>
+
+                                    <option value="ADMIN">
+                                        ADMIN
+                                    </option>
+
+                                    <option value="MANAGER">
+                                        MANAGER
+                                    </option>
+
+                                    <option value="USER">
+                                        USER
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- STATUS -->
+
+                            <div class="col-md-2 mb-2">
+
+                                <label
+                                        class="small text-muted mb-1"
+                                        th:text="#{admin.users.status}">
+
+                                    Status
+
+                                </label>
+
+                                <select
+                                        th:field="*{active}"
+                                        class="form-control form-control-sm bg-light border-0">
+
+                                    <option
+                                            value=""
+                                            th:text="#{search.all}">
+                                        All Statuses
+                                    </option>
+
+                                    <option value="true">
+                                        ACTIVE
+                                    </option>
+
+                                    <option value="false">
+                                        BLOCKED
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- SORT BY -->
+
+                            <div class="col-md-2 mb-2">
+
+                                <label
+                                        class="small text-muted mb-1"
+                                        th:text="#{admin.users.sortBy}">
+                                    Sort By
+                                </label>
+
+                                <select
+                                        name="sortBy"
+                                        class="form-control form-control-sm bg-light border-0">
+
+                                    <option
+                                            value="username"
+                                            th:selected="${sortBy == 'username'}"
+                                            th:text="#{admin.users.username}">
+                                        Username
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- SORT DIRECTION -->
+
+                            <div class="col-md-2 mb-2">
+
+                                <label
+                                        class="small text-muted mb-1"
+                                        th:text="#{admin.users.sortDirection}">
+                                    Direction
+                                </label>
+
+                                <select
+                                        name="sortDir"
+                                        class="form-control form-control-sm bg-light border-0">
+
+                                    <option
+                                            value="asc"
+                                            th:selected="${sortDir == 'asc'}"
+                                            th:text="#{admin.users.ascending}">
+                                        A-Z
+                                    </option>
+
+                                    <option
+                                            value="desc"
+                                            th:selected="${sortDir == 'desc'}"
+                                            th:text="#{admin.users.descending}">
+                                        Z-A
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- BUTTONS -->
+
+                            <div class="col-md-2 mb-2">
+
+                                <button
+                                        class="btn btn-primary btn-sm"
+                                        type="submit"
+                                        th:text="#{search.btnSearch}">
+
+                                    Search
+
+                                </button>
+
+                                <a
+                                        th:href="@{/admin/users(
+                                            lang=${#locale.language}
+                                        )}"
+                                        class="btn btn-secondary btn-sm ml-1"
+                                        th:text="#{search.btnClear}">
+
+                                    Clear
+
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- USERS TABLE -->
+                <!-- ================================================= -->
+
+                <div class="card shadow mb-4">
+
+                    <div class="card-body">
+
                         <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+                            <table
+                                    class="table table-bordered"
+                                    id="dataTable"
+                                    width="100%"
+                                    cellspacing="0">
+
                                 <thead>
+
                                 <tr>
-                                    <th th:text="#{admin.users.username}">Username</th>
-                                    <th th:text="#{admin.users.phone}">Phone</th>
-                                    <th th:text="#{admin.users.role}">Role</th>
-                                    <th th:text="#{admin.users.status}">Status</th>
-                                    <th th:text="#{admin.users.action}">Action</th>
+
+                                    <th
+                                            th:text="#{admin.users.username}">
+                                        Username
+                                    </th>
+
+                                    <th
+                                            th:text="#{admin.users.phone}">
+                                        Phone
+                                    </th>
+
+                                    <th
+                                            th:text="#{admin.users.role}">
+                                        Role
+                                    </th>
+
+                                    <th
+                                            th:text="#{admin.users.status}">
+                                        Status
+                                    </th>
+
+                                    <th
+                                            th:text="#{admin.users.action}">
+                                        Action
+                                    </th>
+
                                 </tr>
+
                                 </thead>
+
+
                                 <tbody>
-                                <tr th:each="user : ${userPage.content}">
-                                    <td th:text="${user.username}"></td>
-                                    <td th:text="${user.phoneNumber}"></td>
-                                    <td th:text="${user.role}"></td>
-                                    <td>
-                                        <span th:if="${user.active}" class="badge badge-success px-2 py-1" th:text="#{admin.status.active}">ACTIVE</span>
-                                        <span th:unless="${user.active}" class="badge badge-danger px-2 py-1" th:text="#{admin.status.blocked}">BLOCKED</span>
+
+
+                                <!-- EMPTY RESULT -->
+
+                                <tr
+                                        th:if="${#lists.isEmpty(userPage.content)}">
+
+                                    <td
+                                            colspan="5"
+                                            class="text-center text-muted"
+                                            th:text="#{dashboard.noTours}">
+
+                                        No users found.
+
                                     </td>
-                                    <td>
-                                        <form th:if="${user.username != 'admin'}" th:action="@{/admin/users/toggle-status}" method="post">
-                                            <input type="hidden" name="username" th:value="${user.username}">
-                                            <input type="hidden" name="page" th:value="${currentPage}">
-                                            <input type="hidden" name="keyword" th:value="${keyword}">
-                                            <button th:if="${user.active}" type="submit" class="btn btn-danger btn-sm" th:text="#{admin.action.block}">Block</button>
-                                            <button th:unless="${user.active}" type="submit" class="btn btn-success btn-sm" th:text="#{admin.action.unblock}">Unblock</button>
-                                        </form>
-                                    </td>
+
                                 </tr>
+
+
+                                <!-- USERS -->
+
+                                <tr
+                                        th:each="user : ${userPage.content}">
+
+
+                                    <!-- USERNAME -->
+
+                                    <td
+                                            th:text="${user.username}">
+                                    </td>
+
+
+                                    <!-- PHONE -->
+
+                                    <td
+                                            th:text="${user.phoneNumber}">
+                                    </td>
+
+
+                                    <!-- ROLE -->
+
+                                    <td
+                                            th:text="${user.role}">
+                                    </td>
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        <span
+                                                th:if="${user.active}"
+                                                class="badge badge-success px-2 py-1"
+                                                th:text="#{admin.status.active}">
+                                            ACTIVE
+                                        </span>
+
+                                        <span
+                                                th:unless="${user.active}"
+                                                class="badge badge-danger px-2 py-1"
+                                                th:text="#{admin.status.blocked}">
+                                            BLOCKED
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- ACTIONS -->
+
+                                    <td>
+
+                                        <div
+                                                class="d-flex align-items-center">
+
+                                            <!-- BLOCK / UNBLOCK -->
+
+                                            <form
+                                                    th:if="${user.username != 'admin'}"
+                                                    th:action="@{/admin/users/toggle-status}"
+                                                    method="post">
+
+                                                <input
+                                                        type="hidden"
+                                                        name="username"
+                                                        th:value="${user.username}">
+
+                                                <input
+                                                        type="hidden"
+                                                        name="page"
+                                                        th:value="${currentPage}">
+
+                                                <input
+                                                        type="hidden"
+                                                        name="lang"
+                                                        th:value="${#locale.language}">
+
+                                                <button
+                                                        th:if="${user.active}"
+                                                        type="submit"
+                                                        class="btn btn-danger btn-sm"
+                                                        th:title="#{admin.action.block}">
+
+                                                    <i
+                                                            class="fas fa-user-slash mr-1">
+                                                    </i>
+
+                                                    <span
+                                                            th:text="#{admin.action.block}">
+                                                        Block
+                                                    </span>
+
+                                                </button>
+
+                                                <button
+                                                        th:unless="${user.active}"
+                                                        type="submit"
+                                                        class="btn btn-success btn-sm"
+                                                        th:title="#{admin.action.unblock}">
+
+                                                    <i
+                                                            class="fas fa-user-check mr-1">
+                                                    </i>
+
+                                                    <span
+                                                            th:text="#{admin.action.unblock}">
+                                                        Unblock
+                                                    </span>
+
+                                                </button>
+
+                                            </form>
+
+
+                                            <!-- DEPOSIT -->
+
+                                            <a
+                                                    th:if="${user.username != 'admin'}"
+                                                    th:href="@{/admin/users/deposit(
+                                                        userId=${user.id},
+                                                        lang=${#locale.language}
+                                                    )}"
+                                                    class="btn btn-primary btn-sm ml-1"
+                                                    th:title="#{admin.action.deposit}">
+
+                                                <i
+                                                        class="fas fa-wallet mr-1">
+                                                </i>
+
+                                                <span
+                                                        th:text="#{admin.action.deposit}">
+                                                    Deposit
+                                                </span>
+
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
                                 </tbody>
+
                             </table>
+
                         </div>
 
-                        <!-- Pagination -->
-                        <nav th:if="${totalPages > 1}" class="mt-4">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                    <a class="page-link" th:href="@{/admin/users(page=${currentPage - 1}, keyword=${keyword})}">Previous</a>
+
+                        <!-- ================================================= -->
+                        <!-- PAGINATION -->
+                        <!-- ================================================= -->
+
+                        <nav
+                                th:if="${totalPages > 1}"
+                                class="mt-4">
+
+                            <ul
+                                    class="pagination justify-content-center">
+
+
+                                <!-- PREVIOUS -->
+
+                                <li
+                                        class="page-item"
+                                        th:classappend="${currentPage == 0} ? 'disabled'">
+
+                                    <a
+                                            class="page-link"
+                                            th:href="@{/admin/users(
+                                                page=${currentPage - 1},
+                                                lang=${#locale.language},
+                                                sortBy=${sortBy},
+                                                sortDir=${sortDir},
+                                                username=${searchRequest.username},
+                                                phoneNumber=${searchRequest.phoneNumber},
+                                                role=${searchRequest.role},
+                                                active=${searchRequest.active}
+                                            )}">
+
+                                        <span
+                                                th:text="#{nav.previous}">
+                                            Previous
+                                        </span>
+
+                                    </a>
+
                                 </li>
-                                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? 'active'">
-                                    <a class="page-link" th:href="@{/admin/users(page=${i}, keyword=${keyword})}" th:text="${i + 1}">1</a>
+
+
+                                <!-- PAGE NUMBERS -->
+
+                                <li
+                                        class="page-item"
+                                        th:each="i : ${#numbers.sequence(
+                                            0,
+                                            totalPages - 1
+                                        )}"
+                                        th:classappend="${currentPage == i}
+                                            ? 'active'">
+
+                                    <a
+                                            class="page-link"
+                                            th:href="@{/admin/users(
+                                                page=${i},
+                                                lang=${#locale.language},
+                                                sortBy=${sortBy},
+                                                sortDir=${sortDir},
+                                                username=${searchRequest.username},
+                                                phoneNumber=${searchRequest.phoneNumber},
+                                                role=${searchRequest.role},
+                                                active=${searchRequest.active}
+                                            )}"
+                                            th:text="${i + 1}">
+                                        1
+                                    </a>
+
                                 </li>
-                                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                                    <a class="page-link" th:href="@{/admin/users(page=${currentPage + 1}, keyword=${keyword})}">Next</a>
+
+
+                                <!-- NEXT -->
+
+                                <li
+                                        class="page-item"
+                                        th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+
+                                    <a
+                                            class="page-link"
+                                            th:href="@{/admin/users(
+                                                page=${currentPage + 1},
+                                                lang=${#locale.language},
+                                                sortBy=${sortBy},
+                                                sortDir=${sortDir},
+                                                username=${searchRequest.username},
+                                                phoneNumber=${searchRequest.phoneNumber},
+                                                role=${searchRequest.role},
+                                                active=${searchRequest.active}
+                                            )}">
+
+                                        <span
+                                                th:text="#{nav.next}">
+                                            Next
+                                        </span>
+
+                                    </a>
+
                                 </li>
+
                             </ul>
+
                         </nav>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
+
 </body>
+
 </html>
+

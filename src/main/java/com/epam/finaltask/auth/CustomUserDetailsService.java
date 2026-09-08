@@ -1,7 +1,7 @@
 package com.epam.finaltask.auth;
 
-import com.epam.finaltask.model.User;
-import com.epam.finaltask.repository.UserRepository;
+import com.epam.finaltask.user.User;
+import com.epam.finaltask.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,12 +22,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                user.isActive(), // ИСПРАВЛЕНО: Теперь Spring Security знает, заблокирован юзер или нет!
+                user.isActive(),
                 true,
                 true,
                 true,

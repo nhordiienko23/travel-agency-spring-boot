@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:lang="${#locale.language}">
+
+<head>
+    <meta charset="utf-8">
+
+    <title th:text="#{admin.deposit.title}">
+        Deposit Balance
+    </title>
+
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+            rel="stylesheet">
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.1.4/css/sb-admin-2.min.css"
+            rel="stylesheet">
+
+    <link
+            rel="stylesheet"
+            th:href="@{/css/dark-theme.css}">
+
+    <style>
+        .amount-input {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+
+<body id="page-top">
+
+<div id="wrapper">
+
+
+    <!-- ========================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================================================= -->
+
+    <ul
+            class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+            id="accordionSidebar">
+
+        <a
+                class="sidebar-brand d-flex align-items-center justify-content-center"
+                th:href="@{/dashboard(lang=${#locale.language})}">
+
+            <div class="sidebar-brand-icon rotate-n-15">
+
+                <i
+                        class="fas"
+                        style="font-style: normal;">
+                    ✈️
+                </i>
+
+            </div>
+
+            <div
+                    class="sidebar-brand-text mx-3"
+                    th:text="#{index.brand}">
+                Travel Agency
+            </div>
+
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+
+        <!-- USERS -->
+
+        <li class="nav-item active">
+
+            <a
+                    class="nav-link"
+                    th:href="@{/admin/users(lang=${#locale.language})}">
+
+                <i class="fas fa-fw fa-users"></i>
+
+                <span th:text="#{admin.users.nav}">
+                    Users Management
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- DASHBOARD -->
+
+        <li class="nav-item">
+
+            <a
+                    class="nav-link"
+                    th:href="@{/dashboard(lang=${#locale.language})}">
+
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+
+                <span th:text="#{admin.dashboard.nav}">
+                    Client Dashboard
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- VOUCHERS -->
+
+        <li class="nav-item">
+
+            <a
+                    class="nav-link"
+                    th:href="@{/admin/vouchers(lang=${#locale.language})}">
+
+                <i class="fas fa-fw fa-plane"></i>
+
+                <span th:text="#{admin.vouchers.nav}">
+                    Vouchers Management
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <hr class="sidebar-divider d-none d-md-block">
+
+    </ul>
+
+
+    <!-- ========================================================= -->
+    <!-- CONTENT -->
+    <!-- ========================================================= -->
+
+    <div
+            id="content-wrapper"
+            class="d-flex flex-column">
+
+        <div id="content">
+
+
+            <!-- ================================================= -->
+            <!-- TOPBAR -->
+            <!-- ================================================= -->
+
+            <nav
+                    class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <ul
+                        class="navbar-nav ml-auto align-items-center">
+
+
+                    <!-- LANGUAGE -->
+
+                    <li class="nav-item mr-3">
+
+                        <div
+                                class="btn-group"
+                                role="group">
+
+                            <a
+                                    class="btn btn-sm btn-outline-secondary language-link"
+                                    th:href="@{/admin/users/deposit(
+                                        userId=${user.id},
+                                        lang='en'
+                                    )}">
+
+                                EN
+
+                            </a>
+
+                            <a
+                                    class="btn btn-sm btn-outline-secondary language-link"
+                                    th:href="@{/admin/users/deposit(
+                                        userId=${user.id},
+                                        lang='ru'
+                                    )}">
+
+                                RU
+
+                            </a>
+
+                        </div>
+
+                    </li>
+
+
+                    <!-- ADMIN -->
+
+                    <li class="nav-item">
+
+                        <span
+                                class="mr-2 d-none d-lg-inline text-gray-600 small"
+                                th:text="#{admin.administrator}">
+
+                            Administrator
+
+                        </span>
+
+                    </li>
+
+
+                    <div
+                            class="topbar-divider d-none d-sm-block">
+                    </div>
+
+
+                    <!-- LOGOUT -->
+
+                    <li class="nav-item">
+
+                        <a
+                                class="nav-link text-danger font-weight-bold"
+                                th:href="@{/auth/logout}">
+
+                            <i
+                                    class="fas fa-sign-out-alt fa-sm fa-fw mr-2">
+                            </i>
+
+                            <span th:text="#{dashboard.logout}">
+                                Logout
+                            </span>
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+
+
+            <!-- ================================================= -->
+            <!-- PAGE -->
+            <!-- ================================================= -->
+
+            <div class="container-fluid">
+
+                <h1
+                        class="h3 mb-4 text-gray-800"
+                        th:text="#{admin.deposit.heading}">
+
+                    Deposit User Balance
+
+                </h1>
+
+
+                <div class="row justify-content-center">
+
+                    <div class="col-xl-6 col-lg-7 col-md-9">
+
+                        <div class="card shadow mb-4">
+
+                            <div class="card-header py-3">
+
+                                <h6
+                                        class="m-0 font-weight-bold text-primary"
+                                        th:text="#{admin.deposit.formTitle}">
+
+                                    Deposit Balance
+
+                                </h6>
+
+                            </div>
+
+
+                            <div class="card-body">
+
+                                <form
+                                        id="depositForm"
+                                        th:action="@{/admin/users/deposit}"
+                                        th:object="${depositRequest}"
+                                        method="post">
+
+
+                                    <!-- USER ID -->
+
+                                    <input
+                                            type="hidden"
+                                            th:field="*{userId}">
+
+
+                                    <!-- USERNAME -->
+
+                                    <div class="form-group">
+
+                                        <label
+                                                class="font-weight-bold"
+                                                th:text="#{admin.deposit.username}">
+
+                                            Username
+
+                                        </label>
+
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                th:value="${user.username}"
+                                                readonly>
+
+                                    </div>
+
+
+                                    <!-- CURRENT BALANCE -->
+
+                                    <div class="form-group">
+
+                                        <label
+                                                class="font-weight-bold"
+                                                th:text="#{admin.deposit.currentBalance}">
+
+                                            Current Balance ($)
+
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <div class="input-group-prepend">
+
+                                                <span class="input-group-text">
+                                                    $
+                                                </span>
+
+                                            </div>
+
+                                            <input
+                                                    type="text"
+                                                    class="form-control font-weight-bold"
+                                                    th:value="${user.balance != null
+                                                        ? #numbers.formatDecimal(
+                                                            user.balance,
+                                                            1,
+                                                            2
+                                                        )
+                                                        : '0.00'}"
+                                                    readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- AMOUNT -->
+
+                                    <div class="form-group">
+
+                                        <label
+                                                class="font-weight-bold"
+                                                for="amount"
+                                                th:text="#{admin.deposit.amount}">
+
+                                            Amount ($)
+
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <div class="input-group-prepend">
+
+                                                <span class="input-group-text">
+                                                    $
+                                                </span>
+
+                                            </div>
+
+                                            <input
+                                                    id="amount"
+                                                    type="text"
+                                                    inputmode="decimal"
+                                                    autocomplete="off"
+                                                    maxlength="18"
+                                                    class="form-control amount-input"
+                                                    th:field="*{amount}"
+                                                    th:placeholder="#{admin.deposit.amountPlaceholder}">
+
+                                        </div>
+
+
+                                        <!-- VALIDATION ERROR -->
+
+                                        <div
+                                                class="text-danger small mt-1"
+                                                th:if="${#fields.hasErrors('amount')}"
+                                                th:errors="*{amount}">
+
+                                            Invalid amount
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- BUTTONS -->
+
+                                    <div
+                                            class="d-flex justify-content-between mt-4">
+
+
+                                        <!-- CANCEL -->
+
+                                        <a
+                                                th:href="@{/admin/users(
+                                                    lang=${#locale.language}
+                                                )}"
+                                                class="btn btn-secondary">
+
+                                            <i
+                                                    class="fas fa-arrow-left mr-1">
+                                            </i>
+
+                                            <span
+                                                    th:text="#{admin.deposit.cancel}">
+                                                Cancel
+                                            </span>
+
+                                        </a>
+
+
+                                        <!-- DEPOSIT -->
+
+                                        <button
+                                                type="submit"
+                                                class="btn btn-primary">
+
+                                            <i
+                                                    class="fas fa-wallet mr-1">
+                                            </i>
+
+                                            <span
+                                                    th:text="#{admin.deposit.submit}">
+                                                Deposit
+                                            </span>
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- AMOUNT VALIDATION AND LANGUAGE SWITCH SUPPORT -->
+<!-- ========================================================= -->
+
+<script>
+
+    const amountInput =
+        document.getElementById("amount");
+
+    const depositForm =
+        document.getElementById("depositForm");
+
+    const languageLinks =
+        document.querySelectorAll(".language-link");
+
+    const storageKey =
+        "adminDepositAmount";
+
+
+    /*
+     * Allow only digits 0-9 and one decimal point.
+     *
+     * Maximum:
+     * 15 digits before decimal point
+     * 2 digits after decimal point
+     */
+    amountInput.addEventListener(
+        "input",
+        function () {
+
+            let value =
+                this.value;
+
+            /*
+             * Remove all characters except
+             * digits and decimal point.
+             */
+            value =
+                value.replace(
+                    /[^0-9.]/g,
+                    ""
+                );
+
+            /*
+             * Keep only the first decimal point.
+             */
+            const firstDot =
+                value.indexOf(".");
+
+            if (firstDot !== -1) {
+
+                value =
+                    value.substring(
+                        0,
+                        firstDot + 1
+                    )
+                    +
+                    value
+                        .substring(
+                            firstDot + 1
+                        )
+                        .replace(
+                            /\./g,
+                            ""
+                        );
+            }
+
+            let parts =
+                value.split(".");
+
+            /*
+             * Maximum 15 digits before
+             * the decimal point.
+             */
+            parts[0] =
+                parts[0].substring(
+                    0,
+                    15
+                );
+
+            /*
+             * Maximum 2 digits after
+             * the decimal point.
+             */
+            if (parts.length > 1) {
+
+                parts[1] =
+                    parts[1].substring(
+                        0,
+                        2
+                    );
+
+                value =
+                    parts[0]
+                    + "."
+                    + parts[1];
+
+            } else {
+
+                value =
+                    parts[0];
+            }
+
+            this.value =
+                value;
+        }
+    );
+
+
+    /*
+     * Prevent minus, plus, e and E
+     * before they even appear in the field.
+     */
+    amountInput.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key === "-"
+                || event.key === "+"
+                || event.key === "e"
+                || event.key === "E"
+            ) {
+
+                event.preventDefault();
+            }
+        }
+    );
+
+
+    /*
+     * Save current amount before
+     * switching the language.
+     */
+    languageLinks.forEach(
+        link => {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        amountInput.value !== ""
+                    ) {
+
+                        sessionStorage.setItem(
+                            storageKey,
+                            amountInput.value
+                        );
+                    }
+                }
+            );
+
+        }
+    );
+
+
+    /*
+     * Restore amount after
+     * switching the language.
+     */
+    window.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const savedAmount =
+                sessionStorage.getItem(
+                    storageKey
+                );
+
+            if (
+                savedAmount !== null
+                && amountInput.value === ""
+            ) {
+
+                amountInput.value =
+                    savedAmount;
+            }
+        }
+    );
+
+
+    /*
+     * Remove saved draft when the
+     * deposit form is submitted.
+     */
+    depositForm.addEventListener(
+        "submit",
+        function () {
+
+            sessionStorage.removeItem(
+                storageKey
+            );
+        }
+    );
+
+</script>
+
+</body>
+</html>
+
