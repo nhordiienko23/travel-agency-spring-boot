@@ -175,7 +175,6 @@ DTOs are used at the controller/service boundary to avoid exposing JPA entities 
 - Thymeleaf
 - Bootstrap 4
 - Springdoc OpenAPI / Swagger UI
-- MapStruct
 - Lombok
 - JUnit 5
 - Mockito
